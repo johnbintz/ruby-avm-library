@@ -20,5 +20,9 @@ module AVM
     def <=>(other)
       self.name <=> other.name
     end
+
+    def to_creator_list_element
+      %{<rdf:li>#{self.name}</rdf:li>}
+    end
   end
 end

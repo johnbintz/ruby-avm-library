@@ -37,6 +37,8 @@ describe AVM::Contact do
   its(:zip) { should == postal_code }
   its(:country) { should == country }
 
+  its(:to_creator_list_element) { should == "<rdf:li>John Bintz</rdf:li>" }
+
   describe 'mappings' do
     AVM::Contact::FIELD_MAP.each do |key, value|
       context "#{key} => #{value}" do
