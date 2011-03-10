@@ -1,1 +1,6 @@
 -c
+--require ./spec/quick_fix_formatter.rb
+--format progress
+--format RSpec::Core::Formatters::QuickFixFormatter
+--out .quickfix.txt
+

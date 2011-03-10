@@ -3,13 +3,15 @@ require 'nokogiri'
 
 module AVM
   class Creator
-    attr_reader :contacts
+    attr_reader :contacts, :image
 
-    PRIMARY_CONTACT_FIELDS = [ :address, :city, :state, :province, :postal_code, :zip, :country ]
+    IPTC_CORE_FIELDS = [ :address, :city, :state, :zip, :country ]
+    PRIMARY_CONTACT_FIELDS = IPTC_CORE_FIELDS + [ :province, :postal_code ]
 
-    def initialize
+    def initialize(image)
       @options = {}
       @contacts = []
+      @image = image
     end
 
     def merge!(hash)
@@ -28,12 +30,31 @@ module AVM
       end
     end
 
-    def add_to_rdf(rdf)
-      creator = rdf.add_child('<dc:creator><rdf:Seq></rdf:Seq></dc:creator>')
-      
-      list = creator.at_xpath('.//rdf:Seq')
+    def add_to_document(document)
+      document.add_to_doc do |refs|
+        creator = refs[:dublin_core].add_child('<dc:creator><rdf:Seq></rdf:Seq></dc:creator>')
 
-      contacts.sort.each { |contact| list.add_child(contact.to_creator_list_element) }
+        list = creator.at_xpath('.//rdf:Seq')
+        contact_info = refs[:iptc].add_child('<Iptc4xmpCore:CreatorContactInfo rdf:parseType="Resource" />').first
+
+        contacts.sort.each do |contact| 
+          list.add_child(contact.to_creator_list_element) 
+        end
+
+        if primary_contact
+          [ [ :telephone, 'CiTelWork' ], [ :email, 'CiEmailWork' ] ].each do |key, element_name|
+            contact_info.add_child "<Iptc4xmpCore:#{element_name}>#{contacts.sort.collect(&key).join(',')}</Iptc4xmpCore:#{element_name}>"
+          end
+
+          iptc_namespace = document.doc.root.namespace_scopes.find { |ns| ns.prefix == 'Iptc4xmpCore' }
+
+          IPTC_CORE_FIELDS.zip(%w{CiAdrExtadr CiAdrCity CiAdrRegion CiAdrPcode CiAdrCtry}).each do |key, element_name|
+            node = contact_info.document.create_element(element_name, primary_contact.send(key))
+            node.namespace = iptc_namespace
+            contact_info.add_child node
+          end
+        end
+      end
     end
 
     def primary_contact
