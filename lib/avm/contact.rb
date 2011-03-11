@@ -24,5 +24,9 @@ module AVM
     def to_creator_list_element
       %{<rdf:li>#{self.name}</rdf:li>}
     end
+
+    def primary?
+      @primary
+    end
   end
 end

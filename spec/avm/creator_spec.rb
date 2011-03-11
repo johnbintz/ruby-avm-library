@@ -108,18 +108,7 @@ describe AVM::Creator do
 
       its('creator.length') { should == 1 }
 
-      context 'creator one' do
-        subject { image.creator[0] }
-
-        let(:name) { 'John Bintz' }
-        let(:email) { 'bintz@stsci.edu' }
-        let(:telephone) { '800-555-1234' }
-        let(:address) { '3700 San Martin Drive' }
-        let(:city) { 'Baltimore' }
-        let(:state) { 'Maryland' }
-        let(:zip) { '21218' }
-        let(:country) { 'USA' }
-
+      def self.field_checks
         its(:name) { should == name }
         its(:address) { should == address }
         its(:city) { should == city }
@@ -129,10 +118,54 @@ describe AVM::Creator do
         its(:email) { should == email }
         its(:telephone) { should == telephone }
       end
-    end
 
-    context 'two creators' do
-      let(:file_path) { 'spec/sample_files/creator/two_creators.xmp' }
+      let(:name) { 'John Bintz' }
+      let(:email) { 'bintz@stsci.edu' }
+      let(:telephone) { '800-555-1234' }
+      let(:address) { '3700 San Martin Drive' }
+      let(:city) { 'Baltimore' }
+      let(:state) { 'Maryland' }
+      let(:zip) { '21218' }
+      let(:country) { 'USA' }
+
+      context 'creator one' do
+        subject { image.creator[0] }
+
+        field_checks
+
+        it { should be_primary }
+      end
+
+      context 'two creators' do
+        let(:file_path) { 'spec/sample_files/creator/two_creators.xmp' }
+
+        its('creator.length') { should == 2 }
+
+        context 'first creator' do
+          subject { image.creator[0] }
+
+          field_checks
+
+          it { should be_primary }
+        end
+
+        context 'second creator' do
+          subject { image.creator[1] }
+
+          field_checks
+
+          it { should_not be_primary }
+
+          let(:name) { 'Aohn Bintz' }
+          let(:email) { 'aohn@stsci.edu' }
+          let(:telephone) { '800-555-2345' }
+          let(:address) { '3700 San Martin Drive' }
+          let(:city) { 'Baltimore' }
+          let(:state) { 'Maryland' }
+          let(:zip) { '21218' }
+          let(:country) { 'USA' }
+        end
+      end
     end
   end
 

@@ -85,12 +85,14 @@ module AVM
 
         IPTC_CORE_FIELDS_AND_NAMES.each do |key, element_name|
           if node = refs[:iptc].at_xpath("//Iptc4xmpCore:#{element_name}")
-            contacts.first[key] = node.text.strip
+            contacts.each { |contact| contact[key] = node.text.strip }
           end
         end
       end
 
-      @contacts = contacts.collect { |contact| Contact.new(contact) }
+      if !(@contacts = contacts.collect { |contact| Contact.new(contact) }).empty?
+        @contacts.first.primary = true
+      end
     end
 
     def primary_contact

@@ -3,7 +3,10 @@
     <rdf:Description rdf:about=""
       xmlns:dc="http://purl.org/dc/elements/1.1/">
       <dc:creator>
-        <rdf:Seq><rdf:li>John Bintz</rdf:li></rdf:Seq>
+        <rdf:Seq>
+          <rdf:li>John Bintz</rdf:li>
+          <rdf:li>Aohn Bintz</rdf:li>
+        </rdf:Seq>
       </dc:creator>
     </rdf:Description>
     <rdf:Description rdf:about=""
@@ -14,8 +17,8 @@
         <Iptc4xmpCore:CiAdrRegion>Maryland</Iptc4xmpCore:CiAdrRegion>
         <Iptc4xmpCore:CiAdrPcode>21218</Iptc4xmpCore:CiAdrPcode>
         <Iptc4xmpCore:CiAdrCtry>USA</Iptc4xmpCore:CiAdrCtry>
-        <Iptc4xmpCore:CiTelWork>800-555-1234</Iptc4xmpCore:CiTelWork>
-        <Iptc4xmpCore:CiEmailWork>bintz@stsci.edu</Iptc4xmpCore:CiEmailWork>
+        <Iptc4xmpCore:CiTelWork>800-555-1234,800-555-2345</Iptc4xmpCore:CiTelWork>
+        <Iptc4xmpCore:CiEmailWork>bintz@stsci.edu,aohn@stsci.edu</Iptc4xmpCore:CiEmailWork>
         <Iptc4xmpCore:CiUrlWork>http://hubblesite.org</Iptc4xmpCore:CiUrlWork>
       </Iptc4xmpCore:CreatorContactInfo>
     </rdf:Description>
