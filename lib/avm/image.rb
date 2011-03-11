@@ -30,6 +30,10 @@ module AVM
       Time.parse(@options[:date])
     end
 
+    def distance
+      [ light_years, redshift ]
+    end
+
     def self.from_xml(string)
       document = AVM::XMP.from_string(string)
 

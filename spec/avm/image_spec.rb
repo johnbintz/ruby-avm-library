@@ -20,7 +20,9 @@ describe AVM::Image do
       :date => date, 
       :id => id, 
       :type => type, 
-      :image_quality => image_quality 
+      :image_quality => image_quality,
+      :redshift => redshift,
+      :light_years => light_years
     } }
 
     let(:title) { 'My title' }
@@ -33,6 +35,8 @@ describe AVM::Image do
     let(:id) { 'ID' }
     let(:type) { 'Obvservation' }
     let(:image_quality) { 'Good' }
+    let(:redshift) { 'Redshift' }
+    let(:light_years) { 'Light years' }
 
     its(:creator) { should be_a_kind_of(AVM::Creator) }
     its(:title) { should == title }
@@ -45,6 +49,10 @@ describe AVM::Image do
     its(:id) { should == id }
     its(:image_type) { should == type }
     its(:image_quality) { should == image_quality }
+    its(:redshift) { should == redshift }
+    its(:light_years) { should == light_years }
+
+    its(:distance) { should == [ light_years, redshift ] }
   end
 
   describe '#to_xml' do
