@@ -7,15 +7,26 @@ module AVM
 
     IPTC_CORE_FIELDS = [ :address, :city, :state, :zip, :country ]
     PRIMARY_CONTACT_FIELDS = IPTC_CORE_FIELDS + [ :province, :postal_code ]
+    IPTC_MULTI_FIELD_MAP = [ [ :telephone, 'CiTelWork' ], [ :email, 'CiEmailWork' ] ]
+    IPTC_CORE_FIELD_ELEMENT_NAMES = %w{CiAdrExtadr CiAdrCity CiAdrRegion CiAdrPcode CiAdrCtry}
+    IPTC_CORE_FIELDS_AND_NAMES = IPTC_CORE_FIELDS.zip(IPTC_CORE_FIELD_ELEMENT_NAMES)
 
-    def initialize(image)
+    def initialize(image, given_contacts = [])
       @options = {}
-      @contacts = []
+      @contacts = given_contacts
       @image = image
     end
 
     def merge!(hash)
       @options.merge!(hash)
+    end
+
+    def length
+      contacts.length
+    end
+
+    def [](which)
+      contacts[which]
     end
 
     def method_missing(key, *opts)
@@ -31,7 +42,7 @@ module AVM
     end
 
     def add_to_document(document)
-      document.add_to_doc do |refs|
+      document.get_refs do |refs|
         creator = refs[:dublin_core].add_child('<dc:creator><rdf:Seq></rdf:Seq></dc:creator>')
 
         list = creator.at_xpath('.//rdf:Seq')
@@ -42,19 +53,44 @@ module AVM
         end
 
         if primary_contact
-          [ [ :telephone, 'CiTelWork' ], [ :email, 'CiEmailWork' ] ].each do |key, element_name|
+          IPTC_MULTI_FIELD_MAP.each do |key, element_name|
             contact_info.add_child "<Iptc4xmpCore:#{element_name}>#{contacts.sort.collect(&key).join(',')}</Iptc4xmpCore:#{element_name}>"
           end
 
           iptc_namespace = document.doc.root.namespace_scopes.find { |ns| ns.prefix == 'Iptc4xmpCore' }
 
-          IPTC_CORE_FIELDS.zip(%w{CiAdrExtadr CiAdrCity CiAdrRegion CiAdrPcode CiAdrCtry}).each do |key, element_name|
+          IPTC_CORE_FIELDS_AND_NAMES.each do |key, element_name|
             node = contact_info.document.create_element(element_name, primary_contact.send(key))
             node.namespace = iptc_namespace
             contact_info.add_child node
           end
         end
       end
+    end
+
+    def from_xml(image, document)
+      contacts = []
+      document.get_refs do |refs|
+        refs[:dublin_core].search('.//rdf:li').each do |name|
+          contacts << { :name => name.text }
+        end
+
+        IPTC_MULTI_FIELD_MAP.each do |key, element_name|
+          if node = refs[:iptc].at_xpath("//Iptc4xmpCore:#{element_name}")
+            node.text.split(',').collect(&:strip).each_with_index do |value, index|
+              contacts[index][key] = value
+            end
+          end
+        end
+
+        IPTC_CORE_FIELDS_AND_NAMES.each do |key, element_name|
+          if node = refs[:iptc].at_xpath("//Iptc4xmpCore:#{element_name}")
+            contacts.first[key] = node.text.strip
+          end
+        end
+      end
+
+      @contacts = contacts.collect { |contact| Contact.new(contact) }
     end
 
     def primary_contact

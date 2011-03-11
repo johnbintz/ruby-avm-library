@@ -1,0 +1,25 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 4.2.2-c063 53.352624, 2008/07/30-18:05:41        ">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description rdf:about=""
+      xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <dc:creator>
+        <rdf:Seq><rdf:li>John Bintz</rdf:li></rdf:Seq>
+      </dc:creator>
+    </rdf:Description>
+    <rdf:Description rdf:about=""
+      xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">
+      <Iptc4xmpCore:CreatorContactInfo rdf:parseType="Resource">
+        <Iptc4xmpCore:CiAdrExtadr>3700 San Martin Drive</Iptc4xmpCore:CiAdrExtadr>
+        <Iptc4xmpCore:CiAdrCity>Baltimore</Iptc4xmpCore:CiAdrCity>
+        <Iptc4xmpCore:CiAdrRegion>Maryland</Iptc4xmpCore:CiAdrRegion>
+        <Iptc4xmpCore:CiAdrPcode>21218</Iptc4xmpCore:CiAdrPcode>
+        <Iptc4xmpCore:CiAdrCtry>USA</Iptc4xmpCore:CiAdrCtry>
+        <Iptc4xmpCore:CiTelWork>800-555-1234</Iptc4xmpCore:CiTelWork>
+        <Iptc4xmpCore:CiEmailWork>bintz@stsci.edu</Iptc4xmpCore:CiEmailWork>
+        <Iptc4xmpCore:CiUrlWork>http://hubblesite.org</Iptc4xmpCore:CiUrlWork>
+      </Iptc4xmpCore:CreatorContactInfo>
+    </rdf:Description>
+  </rdf:RDF>
+</x:xmpmeta>
+
+

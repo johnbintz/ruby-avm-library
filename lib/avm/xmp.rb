@@ -4,15 +4,49 @@ module AVM
   class XMP
     attr_reader :doc
 
-    def initialize
-      @doc = empty_xml_doc
+    def initialize(doc = nil)
+      @doc = doc || empty_xml_doc
+      ensure_namespaces!
+      ensure_descriptions_findable!
     end
 
-    def add_to_doc
+    def get_refs
       yield Hash[[ :dublin_core, :iptc ].collect { |key| [ key, send(key) ] }]
     end
 
+    def self.from_string(string)
+      new(Nokogiri::XML(string))
+    end
+
     private
+      def ensure_namespaces!
+        {
+          :x => "adobe:ns:meta/",
+          :rdf => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+          :dc => "http://purl.org/dc/elements/1.1/",
+          :photoshop => "http://ns.adobe.com/photoshop/1.0/",
+          :avm => "http://www.communicatingastronomy.org/avm/1.0/",
+          :Iptc4xmpCore => "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/"
+        }.each do |namespace, url|
+          doc.root.add_namespace_definition(namespace.to_s, url)
+        end
+      end
+
+      def ensure_descriptions_findable!
+        doc.search('//rdf:Description').each do |description|
+          if first_child = description.first_element_child
+            if first_child.namespace
+              case first_child.namespace.prefix
+              when 'dc'
+                description['about'] = 'Dublin Core'
+              when 'Iptc4xmpCore'
+                description['about'] = 'IPTC'
+              end
+            end
+          end
+        end
+      end
+
       def dublin_core
         at_rdf_description "Dublin Core"
       end
@@ -26,7 +60,7 @@ module AVM
       end
 
       def empty_xml_doc
-        document = Nokogiri::XML(<<-XML)
+        Nokogiri::XML(<<-XML)
 <x:xmpmeta xmlns:x="adobe:ns:meta/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:RDF>
     <rdf:Description about="Dublin Core">
@@ -38,17 +72,6 @@ module AVM
   </rdf:RDF>
 </x:xmpmeta>
         XML
-           
-        {
-          :dc => "http://purl.org/dc/elements/1.1/",
-          :photoshop => "http://ns.adobe.com/photoshop/1.0/",
-          :avm => "http://www.communicatingastronomy.org/avm/1.0/",
-          :Iptc4xmpCore => "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/"
-        }.each do |namespace, url|
-          document.root.add_namespace_definition(namespace.to_s, url)
-        end
-
-        document
       end
   end
 end

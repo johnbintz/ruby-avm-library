@@ -16,6 +16,14 @@ module AVM
 
       document.doc
     end
+
+    def self.from_xml(string)
+      document = AVM::XMP.from_string(string)
+
+      image = new
+      image.creator.from_xml(self, document)
+      image
+    end
   end
 end
 

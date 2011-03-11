@@ -91,6 +91,51 @@ describe AVM::Creator do
     its(:name) { should == first_name }
   end
 
+  describe '#from_xml' do
+    let(:document) { image.to_xml }
+    let(:image) { AVM::Image.from_xml(File.read(file_path)) }
+
+    subject { image }
+
+    context 'no creator' do
+      let(:file_path) { 'spec/sample_files/creator/no_creator.xmp' }
+
+      its('creator.length') { should == 0 }
+    end
+
+    context 'one creator' do
+      let(:file_path) { 'spec/sample_files/creator/one_creator.xmp' }
+
+      its('creator.length') { should == 1 }
+
+      context 'creator one' do
+        subject { image.creator[0] }
+
+        let(:name) { 'John Bintz' }
+        let(:email) { 'bintz@stsci.edu' }
+        let(:telephone) { '800-555-1234' }
+        let(:address) { '3700 San Martin Drive' }
+        let(:city) { 'Baltimore' }
+        let(:state) { 'Maryland' }
+        let(:zip) { '21218' }
+        let(:country) { 'USA' }
+
+        its(:name) { should == name }
+        its(:address) { should == address }
+        its(:city) { should == city }
+        its(:state) { should == state }
+        its(:zip) { should == zip }
+        its(:country) { should == country }
+        its(:email) { should == email }
+        its(:telephone) { should == telephone }
+      end
+    end
+
+    context 'two creators' do
+      let(:file_path) { 'spec/sample_files/creator/two_creators.xmp' }
+    end
+  end
+
   describe 'contact name node' do
     let(:first_name) { 'John' }
     let(:second_name) { 'Zohn' }
