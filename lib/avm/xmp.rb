@@ -2,6 +2,12 @@ require 'nokogiri'
 
 module AVM
   class XMP
+    PREFIXES = {
+      'dc' => 'Dublin Core',
+      'Iptc4xmpCore' => 'IPTC',
+      'Photoshop' => 'Photoshop'
+    }
+
     attr_reader :doc
 
     def initialize(doc = nil)
@@ -11,7 +17,7 @@ module AVM
     end
 
     def get_refs
-      yield Hash[[ :dublin_core, :iptc ].collect { |key| [ key, send(key) ] }]
+      yield Hash[[ :dublin_core, :iptc, :photoshop, :avm ].collect { |key| [ key, send(key) ] }]
     end
 
     def self.from_string(string)
@@ -36,12 +42,7 @@ module AVM
         doc.search('//rdf:Description').each do |description|
           if first_child = description.first_element_child
             if first_child.namespace
-              case first_child.namespace.prefix
-              when 'dc'
-                description['about'] = 'Dublin Core'
-              when 'Iptc4xmpCore'
-                description['about'] = 'IPTC'
-              end
+              description['about'] = PREFIXES[first_child.namespace.prefix]
             end
           end
         end
@@ -55,6 +56,14 @@ module AVM
         at_rdf_description "IPTC"
       end
 
+      def avm
+        at_rdf_description "AVM"
+      end
+
+      def photoshop
+        at_rdf_description "Photoshop"
+      end
+
       def at_rdf_description(about)
         @doc.at_xpath(%{//rdf:Description[@about="#{about}"]})
       end
@@ -63,12 +72,10 @@ module AVM
         Nokogiri::XML(<<-XML)
 <x:xmpmeta xmlns:x="adobe:ns:meta/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:RDF>
-    <rdf:Description about="Dublin Core">
-
-    </rdf:Description>
-    <rdf:Description about="IPTC">
-
-    </rdf:Description>
+    <rdf:Description about="Dublin Core" />
+    <rdf:Description about="IPTC" />
+    <rdf:Description about="Photoshop" />
+    <rdf:Description about="AVM" />
   </rdf:RDF>
 </x:xmpmeta>
         XML

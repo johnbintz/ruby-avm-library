@@ -11,11 +11,14 @@ describe AVM::XMP do
       xmp.get_refs do |refs|
         refs[:dublin_core] << "<rdf:addedToDublinCore />"
         refs[:iptc] << "<rdf:addedToIPTC />"
+        refs[:photoshop] << '<rdf:addedToPhotoshop />'
       end
     }
 
-    specify { xmp.doc.at_xpath('//rdf:Description[@about="Dublin Core"]//rdf:addedToDublinCore').should_not be_nil }
-    specify { xmp.doc.at_xpath('//rdf:Description[@about="IPTC"]//rdf:addedToIPTC').should_not be_nil }
+    it "should have gotten the refs correctly" do
+      xmp.doc.at_xpath('//rdf:Description[@about="Dublin Core"]//rdf:addedToDublinCore').should_not be_nil
+      xmp.doc.at_xpath('//rdf:Description[@about="IPTC"]//rdf:addedToIPTC').should_not be_nil
+    end
   end
 
   describe '.from_string' do
