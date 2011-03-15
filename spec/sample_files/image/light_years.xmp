@@ -1,0 +1,37 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 4.2.2-c063 53.352624, 2008/07/30-18:05:41        ">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description rdf:about=""
+      xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <dc:title>:
+        <rdf:Alt>
+          <rdf:li xml:lang="x-default">My title</rdf:li>
+        </rdf:Alt>
+      </dc:title>
+      <dc:description>
+        <rdf:Alt>
+          <rdf:li xml:lang="x-default">Description</rdf:li>
+        </rdf:Alt>
+      </dc:description>
+
+    </rdf:Description>
+    <rdf:Description rdf:about=""
+      xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">
+      <Iptc4xmpCore:CreatorContactInfo rdf:parseType="Resource">
+      </Iptc4xmpCore:CreatorContactInfo>
+    </rdf:Description>
+    <rdf:Description rdf:about=""
+      xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">
+      <photoshop:Headline>Headline</photoshop:Headline>
+    </rdf:Description>
+    <rdf:Description rdf:about=""
+      xmlns:avm="http://www.communicatingastronomy.org/avm/1.0/">
+      <avm:Distance.Notes>Distance Notes</avm:Distance.Notes>
+      <avm:ReferenceURL>Reference URL</avm:ReferenceURL>
+      <avm:Credit>Credit</avm:Credit>
+      <avm:Date>2010-01-01</avm:Date>
+      <avm:ID>ID</avm:ID>
+      <avm:Type>Observation</avm:Type>
+      <avm:Image.ProductQuality>Good</avm:Image.ProductQuality>
+    </rdf:Description>
+  </rdf:RDF>
+</x:xmpmeta>

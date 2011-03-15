@@ -5,7 +5,8 @@ module AVM
     PREFIXES = {
       'dc' => 'Dublin Core',
       'Iptc4xmpCore' => 'IPTC',
-      'Photoshop' => 'Photoshop'
+      'photoshop' => 'Photoshop',
+      'avm' => 'AVM'
     }
 
     attr_reader :doc
@@ -39,11 +40,22 @@ module AVM
       end
 
       def ensure_descriptions_findable!
+        added = []
+
         doc.search('//rdf:Description').each do |description|
           if first_child = description.first_element_child
             if first_child.namespace
-              description['about'] = PREFIXES[first_child.namespace.prefix]
+              prefix = first_child.namespace.prefix
+
+              description['rdf:about'] = PREFIXES[prefix]
+              added << prefix
             end
+          end
+        end
+
+        PREFIXES.each do |prefix, about|
+          if !added.include?(prefix)
+            doc.at_xpath('//rdf:RDF').add_child(%{<rdf:Description rdf:about="#{about}" />})
           end
         end
       end
@@ -65,17 +77,17 @@ module AVM
       end
 
       def at_rdf_description(about)
-        @doc.at_xpath(%{//rdf:Description[@about="#{about}"]})
+        @doc.at_xpath(%{//rdf:Description[@rdf:about="#{about}"]})
       end
 
       def empty_xml_doc
         Nokogiri::XML(<<-XML)
 <x:xmpmeta xmlns:x="adobe:ns:meta/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:RDF>
-    <rdf:Description about="Dublin Core" />
-    <rdf:Description about="IPTC" />
-    <rdf:Description about="Photoshop" />
-    <rdf:Description about="AVM" />
+    <rdf:Description rdf:about="Dublin Core" />
+    <rdf:Description rdf:about="IPTC" />
+    <rdf:Description rdf:about="Photoshop" />
+    <rdf:Description rdf:about="AVM" />
   </rdf:RDF>
 </x:xmpmeta>
         XML

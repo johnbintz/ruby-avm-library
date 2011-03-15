@@ -12,18 +12,21 @@ describe AVM::XMP do
         refs[:dublin_core] << "<rdf:addedToDublinCore />"
         refs[:iptc] << "<rdf:addedToIPTC />"
         refs[:photoshop] << '<rdf:addedToPhotoshop />'
+        refs[:avm] << '<rdf:addedToAVM />'
       end
     }
 
     it "should have gotten the refs correctly" do
-      xmp.doc.at_xpath('//rdf:Description[@about="Dublin Core"]//rdf:addedToDublinCore').should_not be_nil
-      xmp.doc.at_xpath('//rdf:Description[@about="IPTC"]//rdf:addedToIPTC').should_not be_nil
+      xmp.doc.at_xpath('//rdf:Description[@rdf:about="Dublin Core"]//rdf:addedToDublinCore').should_not be_nil
+      xmp.doc.at_xpath('//rdf:Description[@rdf:about="IPTC"]//rdf:addedToIPTC').should_not be_nil
+      xmp.doc.at_xpath('//rdf:Description[@rdf:about="Photoshop"]//rdf:addedToPhotoshop').should_not be_nil
+      xmp.doc.at_xpath('//rdf:Description[@rdf:about="AVM"]//rdf:addedToAVM').should_not be_nil
     end
   end
 
   describe '.from_string' do
     let(:xmp) { self.class.describes.from_string(string) }
-    let(:string) { '<xml><node /></xml>' }
+    let(:string) { '<xml xmlns:rdf="cats"><rdf:RDF><node /></rdf:RDF></xml>' }
 
     specify { xmp.doc.at_xpath('//node').should_not be_nil }
   end
@@ -42,8 +45,8 @@ describe AVM::XMP do
     context 'no nodes within' do
       let(:content) { '' }
 
-      [ 'Dublin Core', 'IPTC' ].each do |which|
-        specify { xmp.doc.at_xpath(%{//rdf:Description[@about="#{which}"]}).should be_nil }
+      [ 'Dublin Core', 'IPTC', 'Photoshop', 'AVM' ].each do |which|
+        specify { xmp.doc.at_xpath(%{//rdf:Description[@rdf:about="#{which}"]}).children.should be_empty }
       end
     end
 
@@ -55,10 +58,16 @@ describe AVM::XMP do
 <rdf:Description rdf:about="" xmlns:Iptc4xmpCore="http://itpc.org/stf/Iptc4xmpCore/1.0/xmlns/">
   <Iptc4xmpCore:CreatorContactInfo rdf:parseType="Resource" />
 </rdf:Description>
+<rdf:Description rdf:about="" xmlns:Photoshop="http://ns.adobe.com/photoshop/1.0/">
+  <photoshop:Something />
+</rdf:Description>
+<rdf:Description rdf:about="" xmlns:avm="http://www.communicatingastronomy.org/avm/1.0/">
+  <avm:Something />
+</rdf:Description>
       XML
 
-      [ 'Dublin Core', 'IPTC' ].each do |which|
-        specify { xmp.doc.at_xpath(%{//rdf:Description[@about="#{which}"]}).should_not be_nil }
+      [ 'Dublin Core', 'IPTC', 'Photoshop', 'AVM' ].each do |which|
+        specify { xmp.doc.at_xpath(%{//rdf:Description[@rdf:about="#{which}"]}).should_not be_nil }
       end
     end
   end

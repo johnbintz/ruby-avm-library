@@ -3,4 +3,3 @@
 --format progress
 --format RSpec::Core::Formatters::QuickFixFormatter
 --out .quickfix.txt
-
