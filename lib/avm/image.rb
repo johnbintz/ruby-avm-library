@@ -94,14 +94,14 @@ module AVM
         end
 
         if node = refs[:avm].at_xpath('./avm:Distance')
-          list_values = node.search('.//ref:li').collect { |li| li.text }
+          list_values = node.search('.//rdf:li').collect { |li| li.text }
 
           case list_values.length
           when 1
             options[:light_years] = list_values.first
           when 2
             options[:light_years] = (list_values.first == '-') ? nil : list_values.first
-            options[:redshift] = list_valueslast
+            options[:redshift] = list_values.last
           end
         end
       end

@@ -32,7 +32,12 @@
       <avm:ID>ID</avm:ID>
       <avm:Type>Observation</avm:Type>
       <avm:Image.ProductQuality>Good</avm:Image.ProductQuality>
-      <avm:Distance><rdf:Seq><rdf:li>Light years</rdf:li></rdf:Seq></avm:Distance>
+      <avm:Distance>
+        <rdf:Seq>
+          <rdf:li>Light years</rdf:li>
+          <rdf:li>Redshift</rdf:li>
+        </rdf:Seq>
+      </avm:Distance>
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>

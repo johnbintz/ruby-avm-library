@@ -90,23 +90,27 @@ describe AVM::Image do
         has_most_options
 
         its(:redshift) { should be_nil }
+        its(:light_years) { should == light_years }
       end
 
       context "distaince in redshift" do
-        
-      let(:file_path) { 'spec/sample_files/image/redshift.xmp' }
-      end
-      context "distance in both" do
-        
-      let(:file_path) { 'spec/sample_files/image/both.xmp' }
+        let(:file_path) { 'spec/sample_files/image/redshift.xmp' }
 
+        has_most_options
+
+        its(:light_years) { should be_nil }
+        its(:redshift) { should == redshift }
       end
-      context "distance in neither" do
-        
-      let(:file_path) { 'spec/sample_files/image/neither.xmp' }
+
+      context "distance in both" do
+        let(:file_path) { 'spec/sample_files/image/both.xmp' }
+
+        has_most_options
+
+        its(:light_years) { should == light_years }
+        its(:redshift) { should == redshift }
       end
     end
-    
   end
 
   describe '#to_xml' do
