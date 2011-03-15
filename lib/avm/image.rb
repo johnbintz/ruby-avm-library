@@ -8,17 +8,25 @@ module AVM
     DUBLIN_CORE_FIELDS = [ :title, :description ]
     AVM_SINGLE_FIELDS = [ 'Distance.Notes', 'ReferenceURL', 'Credit', 'Date', 'ID', 'Type', 'Image.ProductQuality' ]
 
-    attr_reader :creator
+    attr_reader :creator, :observations
 
     def initialize(options = {})
       @creator = AVM::Creator.new(self)
       @options = options
+      @observations = []
+    end
+
+    def create_observation(options)
+      observation = Observation.new(self, options)
+      @observations << observation
+      observation
     end
 
     def to_xml
       document = AVM::XMP.new
 
       creator.add_to_document(document)
+      Observation.add_to_document(document, observations)
 
       document.get_refs do |refs|
         DUBLIN_CORE_FIELDS.each do |field|
