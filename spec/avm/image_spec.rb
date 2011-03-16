@@ -20,6 +20,8 @@ describe AVM::Image do
   let(:redshift) { 'Redshift' }
   let(:light_years) { 'Light years' }
 
+  it "should have spectral notes"
+
   def self.with_all_options
     let(:options) { { 
       :title => title, 

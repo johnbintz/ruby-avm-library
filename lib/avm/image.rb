@@ -116,6 +116,7 @@ module AVM
 
       image = new(options)
       image.creator.from_xml(self, document)
+      Observation.from_xml(image, document)
       image
     end
 
