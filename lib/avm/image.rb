@@ -2,11 +2,14 @@ require 'avm/creator'
 require 'avm/xmp'
 require 'avm/image_type'
 require 'avm/image_quality'
+require 'avm/observation'
 
 module AVM
   class Image
     DUBLIN_CORE_FIELDS = [ :title, :description ]
-    AVM_SINGLE_FIELDS = [ 'Distance.Notes', 'ReferenceURL', 'Credit', 'Date', 'ID', 'Type', 'Image.ProductQuality' ]
+    AVM_SINGLE_FIELDS = [ 'Distance.Notes', 'Spectral.Notes', 'ReferenceURL', 'Credit', 'Date', 'ID', 'Type', 'Image.ProductQuality' ]
+    AVM_SINGLE_METHODS = [ :distance_notes, :spectral_notes, :reference_url, :credit, :date, :id, :type, :quality ]
+    AVM_SINGLES = AVM_SINGLE_FIELDS.zip(AVM_SINGLE_METHODS)
 
     attr_reader :creator, :observations
 
@@ -35,7 +38,7 @@ module AVM
 
         refs[:photoshop].add_child(%{<photoshop:Headline>#{headline}</photoshop:Headline>})
 
-        AVM_SINGLE_FIELDS.zip([distance_notes, reference_url, credit, string_date, id, image_type, image_quality]).each do |tag, value|
+        AVM_SINGLE_FIELDS.zip([distance_notes, spectral_notes, reference_url, credit, string_date, id, image_type, image_quality]).each do |tag, value|
           refs[:avm].add_child(%{<avm:#{tag}>#{value.to_s}</avm:#{tag}>}) if value
         end
 
@@ -91,7 +94,7 @@ module AVM
           end
         end
 
-        AVM_SINGLE_FIELDS.zip([ :distance_notes, :reference_url, :credit, :date, :id, :type, :quality ]).each do |tag, field|
+        AVM_SINGLES.each do |tag, field|
           if node = refs[:avm].at_xpath("./avm:#{tag}")
             options[field] = node.text
           end

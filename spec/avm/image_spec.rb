@@ -11,6 +11,7 @@ describe AVM::Image do
   let(:headline) { 'Headline' }
   let(:description) { 'Description' }
   let(:distance_notes) { 'Distance Notes' }
+  let(:spectral_notes) { 'Spectral Notes' }
   let(:reference_url) { 'Reference URL' }
   let(:credit) { 'Credit' }
   let(:date) { '2010-01-01' }
@@ -20,14 +21,13 @@ describe AVM::Image do
   let(:redshift) { 'Redshift' }
   let(:light_years) { 'Light years' }
 
-  it "should have spectral notes"
-
   def self.with_all_options
     let(:options) { { 
       :title => title, 
       :headline => headline, 
       :description => description, 
       :distance_notes => distance_notes, 
+      :spectral_notes => spectral_notes, 
       :reference_url => reference_url, 
       :credit => credit, 
       :date => date, 
@@ -45,6 +45,7 @@ describe AVM::Image do
     its(:headline) { should == headline }
     its(:description) { should == description }
     its(:distance_notes) { should == distance_notes }
+    its(:spectral_notes) { should == spectral_notes }
     its(:reference_url) { should == reference_url }
     its(:credit) { should == credit }
     its(:date) { should == Time.parse(date) }
@@ -75,6 +76,7 @@ describe AVM::Image do
       its(:headline) { should be_nil }
       its(:description) { should be_nil }
       its(:distance_notes) { should be_nil }
+      its(:spectral_notes) { should be_nil }
       its(:reference_url) { should be_nil }
       its(:credit) { should be_nil }
       its(:date) { should be_nil }
@@ -139,6 +141,7 @@ describe AVM::Image do
         dublin_core.at_xpath('./dc:description/rdf:Alt/rdf:li').text.should == description
         
         avm.at_xpath('./avm:Distance.Notes').text.should == distance_notes
+        avm.at_xpath('./avm:Spectral.Notes').text.should == spectral_notes
         avm.at_xpath('./avm:ReferenceURL').text.should == reference_url
         avm.at_xpath('./avm:Credit').text.should == credit
         avm.at_xpath('./avm:Date').text.should == date

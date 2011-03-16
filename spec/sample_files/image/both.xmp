@@ -25,6 +25,7 @@
     </rdf:Description>
     <rdf:Description rdf:about=""
       xmlns:avm="http://www.communicatingastronomy.org/avm/1.0/">
+      <avm:Spectral.Notes>Spectral Notes</avm:Spectral.Notes>
       <avm:Distance.Notes>Distance Notes</avm:Distance.Notes>
       <avm:ReferenceURL>Reference URL</avm:ReferenceURL>
       <avm:Credit>Credit</avm:Credit>
