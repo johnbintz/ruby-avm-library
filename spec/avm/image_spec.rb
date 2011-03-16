@@ -34,8 +34,6 @@ describe AVM::Image do
   let(:fits_header) { 'FITS header' }
   let(:spatial_cd_matrix) { [ 1, 2, 3, 4 ] }
 
-  it "should have spatial information"
-
   def self.with_all_options
     let(:options) { { 
       :title => title, 
@@ -172,19 +170,41 @@ describe AVM::Image do
     context 'with basics' do
       with_all_options
       
+      def xpath_text(which, xpath)
+        which.at_xpath(xpath).text
+      end
+
+      def xpath_list(which, xpath)
+        which.at_xpath(xpath).search('.//rdf:li').collect(&:text)
+      end
+
       it "should have the image info tags" do
-        dublin_core.at_xpath('./dc:title/rdf:Alt/rdf:li').text.should == title
-        photoshop.at_xpath('./photoshop:Headline').text.should == headline
-        dublin_core.at_xpath('./dc:description/rdf:Alt/rdf:li').text.should == description
-        
-        avm.at_xpath('./avm:Distance.Notes').text.should == distance_notes
-        avm.at_xpath('./avm:Spectral.Notes').text.should == spectral_notes
-        avm.at_xpath('./avm:ReferenceURL').text.should == reference_url
-        avm.at_xpath('./avm:Credit').text.should == credit
-        avm.at_xpath('./avm:Date').text.should == date
-        avm.at_xpath('./avm:ID').text.should == id
-        avm.at_xpath('./avm:Type').text.should == type
-        avm.at_xpath('./avm:Image.ProductQuality').text.should == image_quality
+        xpath_text(dublin_core, './dc:title/rdf:Alt/rdf:li').should == title
+        xpath_text(photoshop, './photoshop:Headline').should == headline
+        xpath_text(dublin_core, './dc:description/rdf:Alt/rdf:li').should == description
+                
+        xpath_text(avm, './avm:Distance.Notes').should == distance_notes
+        xpath_text(avm, './avm:Spectral.Notes').should == spectral_notes
+        xpath_text(avm, './avm:ReferenceURL').should == reference_url
+        xpath_text(avm, './avm:Credit').should == credit
+        xpath_text(avm, './avm:Date').should == date
+        xpath_text(avm, './avm:ID').should == id
+        xpath_text(avm, './avm:Type').should == type
+        xpath_text(avm, './avm:Image.ProductQuality').should == image_quality
+      end
+
+      it "should have the spatial tags" do
+        xpath_text(avm, './avm:Spatial.CoordinateFrame').should == coordinate_frame
+        xpath_text(avm, './avm:Spatial.Equinox').should == equinox
+        xpath_list(avm, './avm:Spatial.ReferenceValue').should == reference_value.collect(&:to_s)
+        xpath_list(avm, './avm:Spatial.ReferenceDimension').should == reference_dimension.collect(&:to_s)
+        xpath_list(avm, './avm:Spatial.ReferencePixel').should == reference_pixel.collect(&:to_s)
+        xpath_list(avm, './avm:Spatial.Scale').should == spatial_scale.collect(&:to_s)
+        xpath_text(avm, './avm:Spatial.CoordsystemProjection').should == coordinate_system_projection
+        xpath_text(avm, './avm:Spatial.Quality').should == spatial_quality
+        xpath_text(avm, './avm:Spatial.Notes').should == spatial_notes
+        xpath_text(avm, './avm:Spatial.FITSheader').should == fits_header
+        xpath_list(avm, './avm:Spatial.CDMatrix').should == spatial_cd_matrix.collect(&:to_s)
       end
 
       context "distance" do

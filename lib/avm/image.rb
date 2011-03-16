@@ -84,6 +84,7 @@ module AVM
     ]
 
     AVM_SINGLES = AVM_SINGLE_FIELDS.zip(AVM_SINGLE_METHODS)
+    AVM_SINGLES_FOR_MESSAGES = AVM_SINGLE_FIELDS.zip(AVM_SINGLE_MESSAGES)
 
     AVM_TO_FLOAT = [ 
       :spatial_rotation,
@@ -133,9 +134,17 @@ module AVM
 
         refs[:photoshop].add_child(%{<photoshop:Headline>#{headline}</photoshop:Headline>})
 
-        AVM_SINGLE_FIELDS.zip(AVM_SINGLE_MESSAGES).each do |tag, message|
-          value = send(message)
-          refs[:avm].add_child(%{<avm:#{tag}>#{value.to_s}</avm:#{tag}>}) if value
+        AVM_SINGLES_FOR_MESSAGES.each do |tag, message|
+          if value = send(message)
+            case value
+            when Array
+              value = '<rdf:Seq>' + value.collect { |v| "<rdf:li>#{v.to_s}</rdf:li>" }.join + '</rdf:Seq>'
+            else
+              value = value.to_s
+            end
+
+            refs[:avm].add_child(%{<avm:#{tag}>#{value}</avm:#{tag}>})
+          end
         end
 
         distance_nodes = []
