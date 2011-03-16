@@ -12,7 +12,6 @@
           <rdf:li xml:lang="x-default">Description</rdf:li>
         </rdf:Alt>
       </dc:description>
-
     </rdf:Description>
     <rdf:Description rdf:about=""
       xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">
@@ -34,6 +33,45 @@
       <avm:Type>Observation</avm:Type>
       <avm:Image.ProductQuality>Good</avm:Image.ProductQuality>
       <avm:Distance><rdf:Seq><rdf:li>Light years</rdf:li></rdf:Seq></avm:Distance>
+      <avm:Spatial.CoordinateFrame>ICRS</avm:Spatial.CoordinateFrame>
+      <avm:Spatial.Equinox>100</avm:Spatial.Equinox>
+      <avm:Spatial.ReferenceValue>
+        <rdf:Seq>
+          <rdf:li>100</rdf:li>
+          <rdf:li>50</rdf:li>
+        </rdf:Seq>
+      </avm:Spatial.ReferenceValue>
+      <avm:Spatial.ReferenceDimension>
+        <rdf:Seq>
+          <rdf:li>200</rdf:li>
+          <rdf:li>150</rdf:li>
+        </rdf:Seq>
+      </avm:Spatial.ReferenceDimension>
+      <avm:Spatial.ReferencePixel>
+        <rdf:Seq>
+          <rdf:li>25</rdf:li>
+          <rdf:li>15</rdf:li>
+        </rdf:Seq>
+      </avm:Spatial.ReferencePixel>
+      <avm:Spatial.Scale>
+        <rdf:Seq>
+          <rdf:li>40</rdf:li>
+          <rdf:li>35</rdf:li>
+        </rdf:Seq>
+      </avm:Spatial.Scale>
+      <avm:Spatial.Rotation>10</avm:Spatial.Rotation>
+      <avm:Spatial.CoordsystemProjection>TAN</avm:Spatial.CoordsystemProjection>
+      <avm:Spatial.Quality>Full</avm:Spatial.Quality>
+      <avm:Spatial.Notes>Spatial Notes</avm:Spatial.Notes>
+      <avm:Spatial.FITSheader>FITS header</avm:Spatial.FITSheader>
+      <avm:Spatial.CDMatrix>
+        <rdf:Seq>
+          <rdf:li>1</rdf:li>
+          <rdf:li>2</rdf:li>
+          <rdf:li>3</rdf:li>
+          <rdf:li>4</rdf:li>
+        </rdf:Seq>
+      </avm:Spatial.CDMatrix>
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>

@@ -2,6 +2,9 @@ require 'avm/creator'
 require 'avm/xmp'
 require 'avm/image_type'
 require 'avm/image_quality'
+require 'avm/spatial_quality'
+require 'avm/coordinate_system_projection'
+require 'avm/coordinate_frame'
 require 'avm/observation'
 
 module AVM
@@ -16,7 +19,20 @@ module AVM
       'Date',
       'ID',
       'Type',
-      'Image.ProductQuality'
+      'Image.ProductQuality',
+      'Spatial.Equinox',
+      'Spatial.Rotation',
+      'Spatial.Notes',
+      'Spatial.FITSheader',
+      'Spatial.Quality',
+      'Spatial.CoordsystemProjection',
+      'Spatial.CDMatrix',
+      'Spatial.Scale',
+      'Spatial.ReferencePixel',
+      'Spatial.ReferenceDimension',
+      'Spatial.ReferenceValue',
+      'Spatial.Equinox',
+      'Spatial.CoordinateFrame'
     ]
 
     AVM_SINGLE_METHODS = [ 
@@ -27,7 +43,20 @@ module AVM
       :date,
       :id,
       :type,
-      :quality
+      :quality,
+      :spatial_equinox,
+      :spatial_rotation,
+      :spatial_notes,
+      :fits_header,
+      :spatial_quality,
+      :coordinate_system_projection,
+      :spatial_cd_matrix,
+      :spatial_scale,
+      :reference_pixel,
+      :reference_dimension,
+      :reference_value,
+      :equinox,
+      :coordinate_frame
     ]
 
     AVM_SINGLE_MESSAGES = [
@@ -38,16 +67,50 @@ module AVM
       :string_date, 
       :id, 
       :image_type, 
-      :image_quality
+      :image_quality,
+      :spatial_equinox,
+      :spatial_rotation,
+      :spatial_notes,
+      :fits_header,
+      :spatial_quality,
+      :coordinate_system_projection,
+      :spatial_cd_matrix,
+      :spatial_scale,
+      :reference_pixel,
+      :reference_dimension,
+      :reference_value,
+      :equinox,
+      :coordinate_frame
     ]
 
     AVM_SINGLES = AVM_SINGLE_FIELDS.zip(AVM_SINGLE_METHODS)
+
+    AVM_TO_FLOAT = [ 
+      :spatial_rotation,
+      :spatial_cd_matrix,
+      :spatial_scale,
+      :reference_pixel,
+      :reference_dimension,
+      :reference_value
+    ]
 
     attr_reader :creator, :observations
 
     def initialize(options = {})
       @creator = AVM::Creator.new(self)
       @options = options
+
+      AVM_TO_FLOAT.each do |field| 
+        if @options[field]
+          case @options[field]
+          when Array
+            @options[field].collect!(&:to_f)
+          else
+            @options[field] = @options[field].to_f
+          end
+        end
+      end
+
       @observations = []
     end
 
@@ -95,11 +158,23 @@ module AVM
     end
     
     def image_type
-      (AVM::ImageType.const_get(@options[:type].to_sym).new rescue nil)
+      cv_class_instance_for(AVM::ImageType, :type)
     end
 
     def image_quality
-      (AVM::ImageQuality.const_get(@options[:quality].to_sym).new rescue nil)
+      cv_class_instance_for(AVM::ImageQuality, :quality)
+    end
+
+    def spatial_quality
+      cv_class_instance_for(AVM::SpatialQuality, :spatial_quality)
+    end
+
+    def coordinate_frame
+      cv_class_instance_for(AVM::CoordinateFrame, :coordinate_frame)
+    end
+
+    def coordinate_system_projection
+      cv_class_instance_for(AVM::CoordinateSystemProjection, :coordinate_system_projection)
     end
 
     def date
@@ -129,7 +204,11 @@ module AVM
 
         AVM_SINGLES.each do |tag, field|
           if node = refs[:avm].at_xpath("./avm:#{tag}")
-            options[field] = node.text
+            if !(list_items = node.search('.//rdf:li')).empty?
+              options[field] = list_items.collect(&:text)
+            else
+              options[field] = node.text
+            end
           end
         end
 
@@ -167,6 +246,10 @@ module AVM
 
       def rdf_li(text)
         %{<rdf:li>#{text}</rdf:li>}
+      end
+
+      def cv_class_instance_for(mod, field)
+        (mod.const_get(@options[field].to_sym).new rescue nil)
       end
   end
 end

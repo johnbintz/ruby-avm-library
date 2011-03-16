@@ -21,6 +21,21 @@ describe AVM::Image do
   let(:redshift) { 'Redshift' }
   let(:light_years) { 'Light years' }
 
+  let(:coordinate_frame) { 'ICRS' }
+  let(:equinox) { '100' }
+  let(:reference_value) { [ 100, 50 ] }
+  let(:reference_dimension) { [ 200, 150 ] }
+  let(:reference_pixel) { [ 25, 15 ] }
+  let(:spatial_scale) { [ 40, 35 ] }
+  let(:spatial_rotation) { 10 }
+  let(:coordinate_system_projection) { 'TAN' }
+  let(:spatial_quality) { 'Full' }
+  let(:spatial_notes) { 'Spatial Notes' }
+  let(:fits_header) { 'FITS header' }
+  let(:spatial_cd_matrix) { [ 1, 2, 3, 4 ] }
+
+  it "should have spatial information"
+
   def self.with_all_options
     let(:options) { { 
       :title => title, 
@@ -35,7 +50,19 @@ describe AVM::Image do
       :type => type, 
       :quality => image_quality,
       :redshift => redshift,
-      :light_years => light_years
+      :light_years => light_years,
+      :coordinate_frame => coordinate_frame,
+      :equinox => equinox,
+      :reference_value => reference_value,
+      :reference_dimension => reference_dimension,
+      :reference_pixel => reference_pixel,
+      :spatial_scale => spatial_scale,
+      :spatial_rotation => spatial_rotation,
+      :coordinate_system_projection => coordinate_system_projection,
+      :spatial_quality => spatial_quality,
+      :spatial_notes => spatial_notes,
+      :fits_header => fits_header,
+      :spatial_cd_matrix => spatial_cd_matrix,
     } }
   end
 
@@ -52,6 +79,19 @@ describe AVM::Image do
     its(:id) { should == id }
     its(:image_type) { should be_a_kind_of eval("AVM::ImageType::#{type}") }
     its(:image_quality) { should be_a_kind_of eval("AVM::ImageQuality::#{image_quality}") }
+
+    its(:coordinate_frame) { should be_a_kind_of eval("AVM::CoordinateFrame::#{coordinate_frame}") }
+    its(:equinox) { should == equinox }
+    its(:reference_value) { should == reference_value }
+    its(:reference_dimension) { should == reference_dimension }
+    its(:reference_pixel) { should == reference_pixel }
+    its(:spatial_scale) { should == spatial_scale }
+    its(:spatial_rotation) { should == spatial_rotation }
+    its(:coordinate_system_projection) { should be_a_kind_of eval("AVM::CoordinateSystemProjection::#{coordinate_system_projection}") }
+    its(:spatial_quality) { should be_a_kind_of eval("AVM::SpatialQuality::#{spatial_quality}") }
+    its(:spatial_notes) { should == spatial_notes }
+    its(:fits_header) { should == fits_header }
+    its(:spatial_cd_matrix) { should == spatial_cd_matrix }
   end
 
   describe '#initialize' do
@@ -72,21 +112,18 @@ describe AVM::Image do
     context "nothing in it" do
       let(:file_path) { 'spec/sample_files/image/nothing.xmp' }
 
-      its(:title) { should be_nil }
-      its(:headline) { should be_nil }
-      its(:description) { should be_nil }
-      its(:distance_notes) { should be_nil }
-      its(:spectral_notes) { should be_nil }
-      its(:reference_url) { should be_nil }
-      its(:credit) { should be_nil }
-      its(:date) { should be_nil }
-      its(:id) { should be_nil }
-      its(:image_type) { should be_nil }
-      its(:image_quality) { should be_nil }
-      its(:redshift) { should be_nil }
-      its(:light_years) { should be_nil }
+      [ :title, :headline, :description, :distance_notes,
+        :spectral_notes, :reference_url, :credit, :date,
+        :id, :image_type, :image_quality, :redshift,
+        :light_years, :coordinate_frame, :equinox, :reference_value,
+        :reference_dimension, :reference_pixel, :spatial_scale,
+        :spatial_rotation, :coordinate_system_projection, :spatial_quality, :spatial_notes,
+        :fits_header, :spatial_cd_matrix
+      ].each do |field|
+        its(field) { should be_nil }
+      end
     end
-    
+
     context "image in it" do
       context "distance in light years" do
         let(:file_path) { 'spec/sample_files/image/light_years.xmp' }

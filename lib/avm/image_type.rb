@@ -1,14 +1,10 @@
+require 'avm/controlled_vocabulary'
+
 module AVM
   module ImageType
-    %w{Observation Artwork Photographic Planetary Simulation Chart Collage}.each do |type|
-      klass = Class.new do
-        def to_s
-          self.class.to_s.split('::').last
-        end
-      end
+    TERMS = %w{Observation Artwork Photographic Planetary Simulation Chart Collage}
 
-      AVM::ImageType.const_set(type.to_sym, klass)
-    end
+    include ControlledVocabulary
   end
 end
 

@@ -1,8 +1,8 @@
 require 'avm/controlled_vocabulary'
 
 module AVM
-  module ImageQuality
-    TERMS = %w{Good Moderate Poor}
+  module SpatialQuality
+    TERMS = %w{Full Position}
 
     include AVM::ControlledVocabulary
   end
