@@ -7,8 +7,40 @@ require 'avm/observation'
 module AVM
   class Image
     DUBLIN_CORE_FIELDS = [ :title, :description ]
-    AVM_SINGLE_FIELDS = [ 'Distance.Notes', 'Spectral.Notes', 'ReferenceURL', 'Credit', 'Date', 'ID', 'Type', 'Image.ProductQuality' ]
-    AVM_SINGLE_METHODS = [ :distance_notes, :spectral_notes, :reference_url, :credit, :date, :id, :type, :quality ]
+
+    AVM_SINGLE_FIELDS = [ 
+      'Distance.Notes',
+      'Spectral.Notes',
+      'ReferenceURL',
+      'Credit',
+      'Date',
+      'ID',
+      'Type',
+      'Image.ProductQuality'
+    ]
+
+    AVM_SINGLE_METHODS = [ 
+      :distance_notes,
+      :spectral_notes,
+      :reference_url,
+      :credit,
+      :date,
+      :id,
+      :type,
+      :quality
+    ]
+
+    AVM_SINGLE_MESSAGES = [
+      :distance_notes, 
+      :spectral_notes, 
+      :reference_url, 
+      :credit, 
+      :string_date, 
+      :id, 
+      :image_type, 
+      :image_quality
+    ]
+
     AVM_SINGLES = AVM_SINGLE_FIELDS.zip(AVM_SINGLE_METHODS)
 
     attr_reader :creator, :observations
@@ -38,7 +70,8 @@ module AVM
 
         refs[:photoshop].add_child(%{<photoshop:Headline>#{headline}</photoshop:Headline>})
 
-        AVM_SINGLE_FIELDS.zip([distance_notes, spectral_notes, reference_url, credit, string_date, id, image_type, image_quality]).each do |tag, value|
+        AVM_SINGLE_FIELDS.zip(AVM_SINGLE_MESSAGES).each do |tag, message|
+          value = send(message)
           refs[:avm].add_child(%{<avm:#{tag}>#{value.to_s}</avm:#{tag}>}) if value
         end
 
