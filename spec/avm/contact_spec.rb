@@ -37,6 +37,17 @@ describe AVM::Contact do
   its(:zip) { should == postal_code }
   its(:country) { should == country }
 
+  its(:to_h) { should == {
+    :name => name,
+    :email => email,
+    :telephone => telephone,
+    :address => address,
+    :city => city,
+    :state => state,
+    :postal_code => postal_code,
+    :country => country
+  } }
+
   its(:to_creator_list_element) { should == "<rdf:li>John Bintz</rdf:li>" }
 
   describe 'mappings' do
@@ -46,6 +57,36 @@ describe AVM::Contact do
 
         its(value) { should == "test" }
       end
+    end
+  end
+
+  context '#<=>' do
+    let(:second_contact) { AVM::Contact.new(second_contact_info) }
+    let(:contacts) { [ contact, second_contact ] }
+
+    let(:second_name) { 'Aohn Bintz' }
+
+    let(:second_contact_info) { {
+      :name => second_name,
+      :email => email,
+      :telephone => telephone,
+      :address => address,
+      :city => city,
+      :state => state,
+      :postal_code => postal_code,
+      :country => country
+    } }
+
+    subject { contacts.sort }
+
+    context 'primary not set' do
+      it { should == [ second_contact, contact ] }
+    end
+
+    context 'primary set' do
+      before { contact.primary = true }
+
+      it { should == [ contact, second_contact ] }
     end
   end
 end

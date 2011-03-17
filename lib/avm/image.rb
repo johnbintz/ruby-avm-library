@@ -95,6 +95,14 @@ module AVM
       :reference_value
     ]
 
+    HASH_FIELDS = [ :title, :headline, :description, :distance_notes,
+      :spectral_notes, :reference_url, :credit, :date,
+      :id, :image_type, :image_quality, :coordinate_frame,
+      :equinox, :reference_value, :reference_dimension, :reference_pixel,
+      :spatial_scale, :spatial_rotation, :coordinate_system_projection, :spatial_quality,
+      :spatial_notes, :fits_header, :spatial_cd_matrix, :distance
+    ]
+
     attr_reader :creator, :observations
 
     def initialize(options = {})
@@ -242,6 +250,12 @@ module AVM
       image.creator.from_xml(self, document)
       Observation.from_xml(image, document)
       image
+    end
+
+    def to_h
+      hash = Hash[HASH_FIELDS.collect { |key| [ key, send(key) ] }]
+      hash[:creator] = creator.to_a
+      hash
     end
 
     def method_missing(method)

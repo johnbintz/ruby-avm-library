@@ -7,6 +7,10 @@ module AVM
             def to_s
               self.class.to_s.split('::').last
             end
+
+            def ==(other)
+              self.to_s == other.to_s
+            end
           end
 
           klass.const_set(type.to_sym, new_klass)

@@ -27,7 +27,7 @@ describe AVM::Image do
   let(:reference_dimension) { [ 200, 150 ] }
   let(:reference_pixel) { [ 25, 15 ] }
   let(:spatial_scale) { [ 40, 35 ] }
-  let(:spatial_rotation) { 10 }
+  let(:spatial_rotation) { 10.0 }
   let(:coordinate_system_projection) { 'TAN' }
   let(:spatial_quality) { 'Full' }
   let(:spatial_notes) { 'Spatial Notes' }
@@ -64,6 +64,12 @@ describe AVM::Image do
     } }
   end
 
+  let(:avm_image_type) { eval("AVM::ImageType::#{type}") }
+  let(:avm_image_quality) { eval("AVM::ImageQuality::#{image_quality}") }
+  let(:avm_coordinate_frame) { eval("AVM::CoordinateFrame::#{coordinate_frame}") }
+  let(:avm_coordinate_system_projection) { eval("AVM::CoordinateSystemProjection::#{coordinate_system_projection}") }
+  let(:avm_spatial_quality) { eval("AVM::SpatialQuality::#{spatial_quality}") }
+
   def self.has_most_options
     its(:creator) { should be_a_kind_of(AVM::Creator) }
     its(:title) { should == title }
@@ -75,18 +81,18 @@ describe AVM::Image do
     its(:credit) { should == credit }
     its(:date) { should == Time.parse(date) }
     its(:id) { should == id }
-    its(:image_type) { should be_a_kind_of eval("AVM::ImageType::#{type}") }
-    its(:image_quality) { should be_a_kind_of eval("AVM::ImageQuality::#{image_quality}") }
+    its(:image_type) { should be_a_kind_of avm_image_type }
+    its(:image_quality) { should be_a_kind_of avm_image_quality }
 
-    its(:coordinate_frame) { should be_a_kind_of eval("AVM::CoordinateFrame::#{coordinate_frame}") }
+    its(:coordinate_frame) { should be_a_kind_of avm_coordinate_frame }
     its(:equinox) { should == equinox }
     its(:reference_value) { should == reference_value }
     its(:reference_dimension) { should == reference_dimension }
     its(:reference_pixel) { should == reference_pixel }
     its(:spatial_scale) { should == spatial_scale }
     its(:spatial_rotation) { should == spatial_rotation }
-    its(:coordinate_system_projection) { should be_a_kind_of eval("AVM::CoordinateSystemProjection::#{coordinate_system_projection}") }
-    its(:spatial_quality) { should be_a_kind_of eval("AVM::SpatialQuality::#{spatial_quality}") }
+    its(:coordinate_system_projection) { should be_a_kind_of avm_coordinate_system_projection }
+    its(:spatial_quality) { should be_a_kind_of avm_spatial_quality }
     its(:spatial_notes) { should == spatial_notes }
     its(:fits_header) { should == fits_header }
     its(:spatial_cd_matrix) { should == spatial_cd_matrix }
@@ -98,6 +104,34 @@ describe AVM::Image do
     it { should be_a_kind_of(AVM::Image) }
 
     has_most_options
+
+    its(:to_h) { should == {
+      :title => title,
+      :headline => headline,
+      :description => description,
+      :distance_notes => distance_notes,
+      :spectral_notes => spectral_notes,
+      :reference_url => reference_url,
+      :credit => credit,
+      :date => Time.parse(date),
+      :id => id,
+      :image_type => avm_image_type.new,
+      :image_quality => avm_image_quality.new,
+      :coordinate_frame => avm_coordinate_frame.new,
+      :equinox => equinox,
+      :reference_value => reference_value,
+      :reference_dimension => reference_dimension,
+      :reference_pixel => reference_pixel,
+      :spatial_scale => spatial_scale,
+      :spatial_rotation => spatial_rotation,
+      :coordinate_system_projection => avm_coordinate_system_projection.new,
+      :spatial_quality => avm_spatial_quality.new,
+      :spatial_notes => spatial_notes,
+      :fits_header => fits_header,
+      :spatial_cd_matrix => spatial_cd_matrix,
+      :distance => [ light_years, redshift ],
+      :creator => []
+    } }
 
     its(:distance) { should == [ light_years, redshift ] }
   end

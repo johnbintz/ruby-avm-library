@@ -55,6 +55,10 @@ describe AVM::Creator do
       fields = [ :address, :city, :state, :province, :postal_code, :zip, :country ]
       fields.each { |field| its(field) { should == first_contact_address } }
       
+      specify { creator.to_a.should == [
+        first_contact.to_h
+      ] }
+
       context 'two contacts' do
         let(:second_contact) { AVM::Contact.new(
           :name => 'aa bill',
@@ -69,13 +73,23 @@ describe AVM::Creator do
         before { creator.contacts << second_contact }
 
         context 'no primary, first alphabetical is primary' do
+          subject { second_contact }
+
           fields.each { |field| its(field) { should == second_contact_address } }
+
+          specify { creator.to_a.should == [
+            second_contact.to_h, first_contact.to_h
+          ] }
         end
 
         context 'one is primary, use it' do
           before { first_contact.primary = true }
 
           fields.each { |field| its(field) { should == first_contact_address } }
+
+          specify { creator.to_a.should == [
+            first_contact.to_h, second_contact.to_h
+          ] }
         end
       end
     end

@@ -6,6 +6,8 @@ module AVM
       :province => :state_province
     }
 
+    HASH_FIELDS = [ :name, :email, :telephone, :address, :city, :state, :postal_code, :country ]
+
     attr_accessor :primary
 
     def initialize(info)
@@ -18,6 +20,7 @@ module AVM
     end
 
     def <=>(other)
+      return -1 if primary?
       self.name <=> other.name
     end
 
@@ -27,6 +30,10 @@ module AVM
 
     def primary?
       @primary
+    end
+
+    def to_h
+      Hash[HASH_FIELDS.collect { |key| [ key, send(key) ] } ]
     end
   end
 end

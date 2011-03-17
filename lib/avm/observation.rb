@@ -32,6 +32,10 @@ module AVM
       end
     end
 
+    def to_h
+      Hash[@options.keys.reject { |key| key == :string_start_time }.collect { |key| [ key, send(key) ] }]
+    end
+
     def self.from_xml(image, document)
       observation_parts = {}
 

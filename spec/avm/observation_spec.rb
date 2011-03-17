@@ -64,6 +64,18 @@ describe AVM::Observation do
     its(:start_time) { should == Time.parse(start_time) }
     its(:integration_time) { should == integration_time }
     its(:dataset_id) { should == dataset_id }
+
+    its(:to_h) { should == {
+      :facility => facility,
+      :instrument => instrument,
+      :color_assignment => color_assignment,
+      :band => band,
+      :bandpass => bandpass,
+      :wavelength => wavelength,
+      :start_time => Time.parse(start_time),
+      :integration_time => integration_time,
+      :dataset_id => dataset_id
+    } }
   end
 
   context 'defaults' do

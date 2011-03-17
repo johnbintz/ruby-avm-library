@@ -29,6 +29,10 @@ module AVM
       contacts[which]
     end
 
+    def to_a
+      contacts.sort.collect(&:to_h)
+    end
+
     def method_missing(key, *opts)
       if key.to_s[-1..-1] == '='
         @options[key.to_s[0..-2].to_sym] = opts.first
