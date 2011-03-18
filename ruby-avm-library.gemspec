@@ -6,11 +6,11 @@ Gem::Specification.new do |s|
   s.name        = "ruby-avm-library"
   s.version     = Ruby::Avm::Library::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["TODO: Write your name"]
-  s.email       = ["TODO: Write your email address"]
+  s.authors     = ["John Bintz"]
+  s.email       = ["bintz@stsci.edu"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Library for reading and writing AVM XMP metadata}
+  s.description = %q{This library makes working with Astronomy Visualization Metadata (AVM) tags within XMP easier. Reading existing XMP files and generating new ones is made simple through a fully object oriented interface.}
 
   s.rubyforge_project = "ruby-avm-library"
 
