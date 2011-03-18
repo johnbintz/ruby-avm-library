@@ -12,7 +12,6 @@
           <rdf:li xml:lang="x-default">Description</rdf:li>
         </rdf:Alt>
       </dc:description>
-
     </rdf:Description>
     <rdf:Description rdf:about=""
       xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">
@@ -22,6 +21,7 @@
     <rdf:Description rdf:about=""
       xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">
       <photoshop:Headline>Headline</photoshop:Headline>
+      <photoshop:Credit>Credit</photoshop:Credit>
       <photoshop:DateCreated>2010-01-01</photoshop:DateCreated>
     </rdf:Description>
     <rdf:Description rdf:about=""
@@ -29,7 +29,6 @@
       <avm:Spectral.Notes>Spectral Notes</avm:Spectral.Notes>
       <avm:Distance.Notes>Distance Notes</avm:Distance.Notes>
       <avm:ReferenceURL>Reference URL</avm:ReferenceURL>
-      <avm:Credit>Credit</avm:Credit>
       <avm:ID>ID</avm:ID>
       <avm:Type>Observation</avm:Type>
       <avm:Image.ProductQuality>Good</avm:Image.ProductQuality>
@@ -78,6 +77,18 @@
           <rdf:li>4</rdf:li>
         </rdf:Seq>
       </avm:Spatial.CDMatrix>
+      <avm:Publisher>Publisher</avm:Publisher>
+      <avm:PublisherID>Publisher ID</avm:PublisherID>
+      <avm:ResourceID>Resource ID</avm:ResourceID>
+      <avm:ResourceURL>Resource URL</avm:ResourceURL>
+      <avm:RelatedResources>
+        <rdf:Bag>
+          <rdf:li>Resource 1</rdf:li>
+          <rdf:li>Resource 2</rdf:li>
+        </rdf:Bag>
+      </avm:RelatedResources>
+      <avm:MetadataDate>2010-01-05</avm:MetadataDate>
+      <avm:MetadataVersion>1.2</avm:MetadataVersion>
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>

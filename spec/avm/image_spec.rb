@@ -34,6 +34,14 @@ describe AVM::Image do
   let(:fits_header) { 'FITS header' }
   let(:spatial_cd_matrix) { [ 1, 2, 3, 4 ] }
 
+  let(:publisher) { 'Publisher' }
+  let(:publisher_id) { 'Publisher ID' }
+  let(:resource_id) { 'Resource ID' }
+  let(:resource_url) { 'Resource URL' }
+  let(:related_resources) { [ 'Resource 1', 'Resource 2' ] }
+  let(:metadata_date) { '2010-01-05' }
+  let(:metadata_version) { '1.2' }
+
   def self.with_all_options
     let(:options) { { 
       :title => title, 
@@ -61,6 +69,13 @@ describe AVM::Image do
       :spatial_notes => spatial_notes,
       :fits_header => fits_header,
       :spatial_cd_matrix => spatial_cd_matrix,
+      :publisher => publisher,
+      :publisher_id => publisher_id,
+      :resource_id => resource_id,
+      :resource_url => resource_url,
+      :related_resources => related_resources,
+      :metadata_date => metadata_date,
+      :metadata_version => metadata_version,
     } }
   end
 
@@ -96,6 +111,14 @@ describe AVM::Image do
     its(:spatial_notes) { should == spatial_notes }
     its(:fits_header) { should == fits_header }
     its(:spatial_cd_matrix) { should == spatial_cd_matrix }
+
+    its(:publisher) { should == publisher }
+    its(:publisher_id) { should == publisher_id }
+    its(:resource_id) { should == resource_id }
+    its(:resource_url) { should == resource_url }
+    its(:related_resources) { should == related_resources }
+    its(:metadata_date) { should == Time.parse(metadata_date) }
+    its(:metadata_version) { should == metadata_version }
   end
 
   describe '#initialize' do
@@ -130,7 +153,14 @@ describe AVM::Image do
       :fits_header => fits_header,
       :spatial_cd_matrix => spatial_cd_matrix,
       :distance => [ light_years, redshift ],
-      :creator => []
+      :creator => [],
+      :publisher => publisher,
+      :publisher_id => publisher_id,
+      :resource_id => resource_id,
+      :resource_url => resource_url,
+      :related_resources => related_resources,
+      :metadata_date => Time.parse(metadata_date),
+      :metadata_version => metadata_version,
     } }
 
     its(:distance) { should == [ light_years, redshift ] }
@@ -217,8 +247,8 @@ describe AVM::Image do
         which.at_xpath(xpath).text
       end
 
-      def xpath_list(which, xpath)
-        which.at_xpath(xpath).search('.//rdf:li').collect(&:text)
+      def xpath_list(which, xpath, search = './/rdf:li')
+        which.at_xpath(xpath).search(search).collect(&:text)
       end
 
       it "should have the image info tags" do
@@ -229,7 +259,7 @@ describe AVM::Image do
         xpath_text(avm, './avm:Distance.Notes').should == distance_notes
         xpath_text(avm, './avm:Spectral.Notes').should == spectral_notes
         xpath_text(avm, './avm:ReferenceURL').should == reference_url
-        xpath_text(avm, './avm:Credit').should == credit
+        xpath_text(photoshop, './photoshop:Credit').should == credit
         xpath_text(photoshop, './photoshop:DateCreated').should == date
         xpath_text(avm, './avm:ID').should == id
         xpath_text(avm, './avm:Type').should == type
@@ -248,6 +278,16 @@ describe AVM::Image do
         xpath_text(avm, './avm:Spatial.Notes').should == spatial_notes
         xpath_text(avm, './avm:Spatial.FITSheader').should == fits_header
         xpath_list(avm, './avm:Spatial.CDMatrix').should == spatial_cd_matrix.collect(&:to_s)
+      end
+
+      it "should have the publisher tags" do
+        xpath_text(avm, './avm:Publisher').should == publisher
+        xpath_text(avm, './avm:PublisherID').should == publisher_id
+        xpath_text(avm, './avm:ResourceID').should == resource_id
+        xpath_text(avm, './avm:ResourceURL').should == resource_url
+        xpath_list(avm, './avm:RelatedResources', './rdf:Bag/rdf:li').should == related_resources
+        xpath_text(avm, './avm:MetadataDate').should == metadata_date
+        xpath_text(avm, './avm:MetadataVersion').should == metadata_version
       end
 
       context "distance" do

@@ -11,16 +11,31 @@ module AVM
   class Image
     DUBLIN_CORE_FIELDS = [ :title, :description ]
 
-    PHOTOSHOP_SINGLES = {
-      'Headline' => :headline,
-      'DateCreated' => :date
-    }
+    PHOTOSHOP_SINGLE_FIELDS = [
+      'Headline',
+      'DateCreated',
+      'Credit'
+    ]
+
+    PHOTOSHOP_SINGLE_METHODS = [
+      :headline,
+      :date,
+      :credit
+    ]
+
+    PHOTOSHOP_SINGLES_MESSAGES = [
+      :headline,
+      :string_date,
+      :credit
+    ]
+
+    PHOTOSHOP_SINGLES_FOR_METHODS = PHOTOSHOP_SINGLE_FIELDS.zip(PHOTOSHOP_SINGLE_METHODS)
+    PHOTOSHOP_SINGLES_FOR_MESSAGES = PHOTOSHOP_SINGLE_FIELDS.zip(PHOTOSHOP_SINGLES_MESSAGES)
 
     AVM_SINGLE_FIELDS = [ 
       'Distance.Notes',
       'Spectral.Notes',
       'ReferenceURL',
-      'Credit',
       'ID',
       'Type',
       'Image.ProductQuality',
@@ -36,14 +51,20 @@ module AVM
       'Spatial.ReferenceDimension',
       'Spatial.ReferenceValue',
       'Spatial.Equinox',
-      'Spatial.CoordinateFrame'
+      'Spatial.CoordinateFrame',
+      'Publisher',
+      'PublisherID',
+      'ResourceID',
+      'ResourceURL',
+      'RelatedResources',
+      'MetadataDate',
+      'MetadataVersion',
     ]
 
     AVM_SINGLE_METHODS = [ 
       :distance_notes,
       :spectral_notes,
       :reference_url,
-      :credit,
       :id,
       :type,
       :quality,
@@ -59,14 +80,20 @@ module AVM
       :reference_dimension,
       :reference_value,
       :equinox,
-      :coordinate_frame
+      :coordinate_frame,
+      :publisher,
+      :publisher_id,
+      :resource_id,
+      :resource_url,
+      :related_resources,
+      :metadata_date,
+      :metadata_version,
     ]
 
     AVM_SINGLE_MESSAGES = [
       :distance_notes, 
       :spectral_notes, 
       :reference_url, 
-      :credit, 
       :id, 
       :image_type, 
       :image_quality,
@@ -82,7 +109,14 @@ module AVM
       :reference_dimension,
       :reference_value,
       :equinox,
-      :coordinate_frame
+      :coordinate_frame,
+      :publisher,
+      :publisher_id,
+      :resource_id,
+      :resource_url,
+      :related_resources,
+      :string_metadata_date,
+      :metadata_version,
     ]
 
     AVM_SINGLES = AVM_SINGLE_FIELDS.zip(AVM_SINGLE_METHODS)
@@ -102,7 +136,9 @@ module AVM
       :id, :image_type, :image_quality, :coordinate_frame,
       :equinox, :reference_value, :reference_dimension, :reference_pixel,
       :spatial_scale, :spatial_rotation, :coordinate_system_projection, :spatial_quality,
-      :spatial_notes, :fits_header, :spatial_cd_matrix, :distance
+      :spatial_notes, :fits_header, :spatial_cd_matrix, :distance,
+      :publisher, :publisher_id, :resource_id, :resource_url,
+      :related_resources, :metadata_date, :metadata_version
     ]
 
     attr_reader :creator, :observations
@@ -142,14 +178,16 @@ module AVM
           refs[:dublin_core].add_child(%{<dc:#{field}>#{alt_li_tag(send(field))}</dc:#{field}>})
         end
 
-        refs[:photoshop].add_child(%{<photoshop:Headline>#{headline}</photoshop:Headline>})
-        refs[:photoshop].add_child(%{<photoshop:DateCreated>#{string_date}</photoshop:DateCreated>})
+        PHOTOSHOP_SINGLES_FOR_MESSAGES.each do |tag, message|
+          refs[:photoshop].add_child(%{<photoshop:#{tag}>#{send(message)}</photoshop:#{tag}>})
+        end
 
         AVM_SINGLES_FOR_MESSAGES.each do |tag, message|
           if value = send(message)
             case value
             when Array
-              value = '<rdf:Seq>' + value.collect { |v| "<rdf:li>#{v.to_s}</rdf:li>" }.join + '</rdf:Seq>'
+              container_tag = (message == :related_resources) ? 'Bag' : 'Seq'
+              value = "<rdf:#{container_tag}>" + value.collect { |v| "<rdf:li>#{v.to_s}</rdf:li>" }.join + "</rdf:#{container_tag}>"
             else
               value = value.to_s
             end
@@ -198,12 +236,19 @@ module AVM
     end
 
     def date
-      (Time.parse(@options[:date]) rescue nil)
+      date_or_nil(:date)
+    end
+
+    def metadata_date
+      date_or_nil(:metadata_date)
     end
 
     def string_date
-      return nil if !date
-      date.strftime('%Y-%m-%d')
+      string_date_or_nil(:date)
+    end
+
+    def string_metadata_date
+      string_date_or_nil(:metadata_date)
     end
 
     def distance
@@ -232,7 +277,7 @@ module AVM
           end
         end
 
-        PHOTOSHOP_SINGLES.each do |tag, field|
+        PHOTOSHOP_SINGLES_FOR_METHODS.each do |tag, field|
           if node = refs[:photoshop].at_xpath("./photoshop:#{tag}")
             options[field] = node.text
           end
@@ -270,6 +315,16 @@ module AVM
     end
 
     private
+      def date_or_nil(field)
+        (Time.parse(@options[field]) rescue nil)
+      end
+
+      def string_date_or_nil(field)
+        return nil if !send(field)
+        send(field).strftime('%Y-%m-%d')
+      end
+
+
       def alt_li_tag(text)
         %{<rdf:Alt><rdf:li xml:lang="x-default">#{text}</rdf:li></rdf:Alt>}
       end
