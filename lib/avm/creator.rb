@@ -75,12 +75,12 @@ module AVM
     def from_xml(image, document)
       contacts = []
       document.get_refs do |refs|
-        refs[:dublin_core].search('.//rdf:li').each do |name|
-          contacts << { :name => name.text }
+        refs[:dublin_core].search('.//dc:creator//rdf:li').each do |name|
+          contacts << { :name => name.text.strip }
         end
 
         IPTC_MULTI_FIELD_MAP.each do |key, element_name|
-          if node = refs[:iptc].at_xpath("//Iptc4xmpCore:#{element_name}")
+          if node = refs[:iptc].at_xpath(".//Iptc4xmpCore:#{element_name}")
             node.text.split(',').collect(&:strip).each_with_index do |value, index|
               contacts[index][key] = value
             end

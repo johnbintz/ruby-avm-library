@@ -24,11 +24,63 @@ describe AVM::XMP do
     end
   end
 
-  describe '.from_string' do
+  describe 'xml from string' do
     let(:xmp) { self.class.describes.from_string(string) }
-    let(:string) { '<xml xmlns:rdf="cats"><rdf:RDF><node /></rdf:RDF></xml>' }
+    let(:doc) { xmp.doc }
 
-    specify { xmp.doc.at_xpath('//node').should_not be_nil }
+    describe '.from_string' do
+      let(:string) { '<xml xmlns:rdf="cats"><rdf:RDF><node /></rdf:RDF></xml>' }
+
+      specify { xmp.doc.at_xpath('//node').should_not be_nil }
+    end
+
+    describe '#ensure_namespaces! and #ensure_xmlns' do
+      let(:rdf_namespace) { AVM::XMP::REQUIRED_NAMESPACES[:rdf] }
+
+      def self.all_default_namespaces
+        it "should have all the namespaces with the default prefixes" do
+          namespaces = doc.document.collect_namespaces
+
+          namespaces_to_test = AVM::XMP::REQUIRED_NAMESPACES.dup
+          yield namespaces_to_test if block_given?
+
+          namespaces_to_test.each do |prefix, namespace|
+            if namespace
+              namespaces["xmlns:#{prefix}"].should == namespace
+            end
+          end
+        end
+      end
+
+      before { doc }
+
+      context 'none of the namespaces exist' do
+        let(:string) { '<xml><node /></xml>' }
+
+        all_default_namespaces
+
+        specify { xmp.ensure_xmlns('.//rdf:what').should == './/rdf:what' }
+      end
+
+      context 'one namespace exists with the same prefix' do
+        let(:string) { %{<xml xmlns:rdf="#{rdf_namespace}"><node /></xml>} }
+
+        all_default_namespaces
+
+        specify { xmp.ensure_xmlns('.//rdf:what').should == './/rdf:what' }
+      end
+
+      context 'one namespace exists with a different prefix' do
+        let(:string) { %{<xml xmlns:r="#{rdf_namespace}"><node /></xml>} }
+
+        all_default_namespaces { |namespaces|
+          namespaces.delete(:rdf)
+          namespaces[:r] = AVM::XMP::REQUIRED_NAMESPACES[:rdf]
+        }
+
+        specify { xmp.ensure_xmlns('.//rdf:what').should == './/r:what' }
+      end
+    end
   end
 
   describe '#ensure_descriptions_findable!' do
@@ -46,7 +98,7 @@ describe AVM::XMP do
       let(:content) { '' }
 
       [ 'Dublin Core', 'IPTC', 'Photoshop', 'AVM' ].each do |which|
-        specify { xmp.doc.at_xpath(%{//rdf:Description[@rdf:about="#{which}"]}).children.should be_empty }
+        specify { xmp.at_xpath(%{//rdf:Description[@rdf:about="#{which}"]}).children.should be_empty }
       end
     end
 
@@ -67,8 +119,28 @@ describe AVM::XMP do
       XML
 
       [ 'Dublin Core', 'IPTC', 'Photoshop', 'AVM' ].each do |which|
-        specify { xmp.doc.at_xpath(%{//rdf:Description[@rdf:about="#{which}"]}).should_not be_nil }
+        specify { xmp.at_xpath(%{//rdf:Description[@rdf:about="#{which}"]}).should_not be_nil }
       end
+    end
+
+    context 'has a namespace it should know about with a different prefix' do
+      let(:content) { <<-XML }
+<rdf:Description rdf:about="" xmlns:whatever="http://purl.org/dc/elements/1.1/">
+  <whatever:creator />
+</rdf:Description>
+      XML
+
+      specify { xmp.at_xpath(%{//rdf:Description[@rdf:about="Dublin Core"]}).should_not be_nil }
+    end
+
+    context 'has a namespace it knows nothing about' do
+      let(:content) { <<-XML }
+<rdf:Description rdf:about="" xmlns:whatever="http://example.com">
+  <whatever:creator />
+</rdf:Description>
+      XML
+
+      it { expect { xmp }.to_not raise_error }
     end
   end
 end

@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require 'avm/cli'
+
+AVM::CLI.start
+

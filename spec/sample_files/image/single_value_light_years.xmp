@@ -12,7 +12,6 @@
           <rdf:li xml:lang="x-default">Description</rdf:li>
         </rdf:Alt>
       </dc:description>
-
     </rdf:Description>
     <rdf:Description rdf:about=""
       xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">
@@ -33,12 +32,7 @@
       <avm:ID>ID</avm:ID>
       <avm:Type>Observation</avm:Type>
       <avm:Image.ProductQuality>Good</avm:Image.ProductQuality>
-      <avm:Distance>
-        <rdf:Seq>
-          <rdf:li>Light years</rdf:li>
-          <rdf:li>Redshift</rdf:li>
-        </rdf:Seq>
-      </avm:Distance>
+      <avm:Distance>Light years</avm:Distance>
       <avm:Spatial.CoordinateFrame>ICRS</avm:Spatial.CoordinateFrame>
       <avm:Spatial.Equinox>100</avm:Spatial.Equinox>
       <avm:Spatial.ReferenceValue>

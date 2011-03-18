@@ -22,6 +22,7 @@
     <rdf:Description rdf:about=""
       xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">
       <photoshop:Headline>Headline</photoshop:Headline>
+      <photoshop:DateCreated>2010-01-01</photoshop:DateCreated>
     </rdf:Description>
     <rdf:Description rdf:about=""
       xmlns:avm="http://www.communicatingastronomy.org/avm/1.0/">
@@ -29,7 +30,6 @@
       <avm:Distance.Notes>Distance Notes</avm:Distance.Notes>
       <avm:ReferenceURL>Reference URL</avm:ReferenceURL>
       <avm:Credit>Credit</avm:Credit>
-      <avm:Date>2010-01-01</avm:Date>
       <avm:ID>ID</avm:ID>
       <avm:Type>Observation</avm:Type>
       <avm:Image.ProductQuality>Good</avm:Image.ProductQuality>

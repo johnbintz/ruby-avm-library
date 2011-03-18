@@ -5,6 +5,11 @@
       <dc:creator>
         <rdf:Seq><rdf:li>John Bintz</rdf:li></rdf:Seq>
       </dc:creator>
+      <dc:title>
+        <rdf:Alt>
+          <rdf:li xml:lang="x-default">This is an image</rdf:li>
+        </rdf:Alt>
+      </dc:title>
     </rdf:Description>
     <rdf:Description rdf:about=""
       xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">

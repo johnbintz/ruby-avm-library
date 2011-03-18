@@ -11,12 +11,16 @@ module AVM
   class Image
     DUBLIN_CORE_FIELDS = [ :title, :description ]
 
+    PHOTOSHOP_SINGLES = {
+      'Headline' => :headline,
+      'DateCreated' => :date
+    }
+
     AVM_SINGLE_FIELDS = [ 
       'Distance.Notes',
       'Spectral.Notes',
       'ReferenceURL',
       'Credit',
-      'Date',
       'ID',
       'Type',
       'Image.ProductQuality',
@@ -40,7 +44,6 @@ module AVM
       :spectral_notes,
       :reference_url,
       :credit,
-      :date,
       :id,
       :type,
       :quality,
@@ -64,7 +67,6 @@ module AVM
       :spectral_notes, 
       :reference_url, 
       :credit, 
-      :string_date, 
       :id, 
       :image_type, 
       :image_quality,
@@ -141,6 +143,7 @@ module AVM
         end
 
         refs[:photoshop].add_child(%{<photoshop:Headline>#{headline}</photoshop:Headline>})
+        refs[:photoshop].add_child(%{<photoshop:DateCreated>#{string_date}</photoshop:DateCreated>})
 
         AVM_SINGLES_FOR_MESSAGES.each do |tag, message|
           if value = send(message)
@@ -229,14 +232,18 @@ module AVM
           end
         end
 
-        if node = refs[:photoshop].at_xpath('./photoshop:Headline')
-          options[:headline] = node.text
+        PHOTOSHOP_SINGLES.each do |tag, field|
+          if node = refs[:photoshop].at_xpath("./photoshop:#{tag}")
+            options[field] = node.text
+          end
         end
 
         if node = refs[:avm].at_xpath('./avm:Distance')
           list_values = node.search('.//rdf:li').collect { |li| li.text }
 
           case list_values.length
+          when 0
+            options[:light_years] = node.text
           when 1
             options[:light_years] = list_values.first
           when 2

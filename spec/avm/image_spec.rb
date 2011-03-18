@@ -157,6 +157,15 @@ describe AVM::Image do
     end
 
     context "image in it" do
+      context 'distance as a single value, assume light years' do
+        let(:file_path) { 'spec/sample_files/image/single_value_light_years.xmp' }
+
+        has_most_options
+
+        its(:redshift) { should be_nil }
+        its(:light_years) { should == light_years }
+      end
+
       context "distance in light years" do
         let(:file_path) { 'spec/sample_files/image/light_years.xmp' }
 
@@ -197,7 +206,7 @@ describe AVM::Image do
       it "should have basic tags" do
         xml.at_xpath('//rdf:RDF').should_not be_nil 
         xml.search('//rdf:RDF/rdf:Description').should_not be_empty 
-        avm.at_xpath('./avm:Date').should be_nil
+        photoshop.at_xpath('./photoshop:DateCreated').should_not be_nil
       end
     end
 
@@ -221,7 +230,7 @@ describe AVM::Image do
         xpath_text(avm, './avm:Spectral.Notes').should == spectral_notes
         xpath_text(avm, './avm:ReferenceURL').should == reference_url
         xpath_text(avm, './avm:Credit').should == credit
-        xpath_text(avm, './avm:Date').should == date
+        xpath_text(photoshop, './photoshop:DateCreated').should == date
         xpath_text(avm, './avm:ID').should == id
         xpath_text(avm, './avm:Type').should == type
         xpath_text(avm, './avm:Image.ProductQuality').should == image_quality
