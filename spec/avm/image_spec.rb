@@ -21,6 +21,8 @@ describe AVM::Image do
   let(:redshift) { 'Redshift' }
   let(:light_years) { 'Light years' }
 
+  let(:subject_names) { [ 'Name one', 'Name two' ] }
+
   let(:coordinate_frame) { 'ICRS' }
   let(:equinox) { '100' }
   let(:reference_value) { [ 100, 50 ] }
@@ -119,6 +121,8 @@ describe AVM::Image do
     its(:related_resources) { should == related_resources }
     its(:metadata_date) { should == Time.parse(metadata_date) }
     its(:metadata_version) { should == metadata_version }
+
+    it { should be_valid }
   end
 
   describe '#initialize' do
@@ -166,6 +170,12 @@ describe AVM::Image do
     its(:distance) { should == [ light_years, redshift ] }
   end
 
+  describe 'not valid' do
+    let(:image) { AVM::Image.new }
+
+    it { should_not be_valid }
+  end
+
   describe '.from_xml' do
     let(:image) { AVM::Image.from_xml(File.read(file_path)) }
 
@@ -184,6 +194,8 @@ describe AVM::Image do
       ].each do |field|
         its(field) { should be_nil }
       end
+
+      it { should_not be_valid }
     end
 
     context "image in it" do

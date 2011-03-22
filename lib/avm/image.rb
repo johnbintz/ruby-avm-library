@@ -161,6 +161,10 @@ module AVM
       @observations = []
     end
 
+    def valid?
+      self.headline && self.credit
+    end
+
     def create_observation(options)
       observation = Observation.new(self, options)
       @observations << observation
