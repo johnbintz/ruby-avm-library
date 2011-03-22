@@ -162,7 +162,7 @@ module AVM
     end
 
     def valid?
-      self.headline && self.credit
+      self.title && self.credit
     end
 
     def create_observation(options)
