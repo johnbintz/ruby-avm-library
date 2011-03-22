@@ -42,7 +42,7 @@ module AVM
       document.get_refs do |refs|
         AVM_SINGLES.each do |name, method|
           if node = refs[:avm].at_xpath(".//avm:#{name}")
-            observation_parts[method] = node.text.split(',').collect(&:strip)
+            observation_parts[method] = node.text.split(';').collect(&:strip)
           end
         end
       end

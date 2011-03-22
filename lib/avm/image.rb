@@ -280,10 +280,14 @@ module AVM
 
         AVM_SINGLES.each do |tag, field|
           if node = refs[:avm].at_xpath("./avm:#{tag}")
-            if !(list_items = node.search('.//rdf:li')).empty?
-              options[field] = list_items.collect(&:text)
+            if field == :categories
+              options[field] = node.text.split(";").collect(&:strip)
             else
-              options[field] = node.text
+              if !(list_items = node.search('.//rdf:li')).empty?
+                options[field] = list_items.collect(&:text)
+              else
+                options[field] = node.text
+              end
             end
           end
         end

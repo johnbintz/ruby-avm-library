@@ -39,12 +39,7 @@
       <avm:Type>Observation</avm:Type>
       <avm:Image.ProductQuality>Good</avm:Image.ProductQuality>
       <avm:Distance>Light years</avm:Distance>
-      <avm:Subject.Category>
-        <rdf:Bag>
-          <rdf:li>Category one</rdf:li>
-          <rdf:li>Category two</rdf:li>
-        </rdf:Bag>
-      </avm:Subject.Category>
+      <avm:Subject.Category>Category one; Category two</avm:Subject.Category>
       <avm:Spatial.CoordinateFrame>ICRS</avm:Spatial.CoordinateFrame>
       <avm:Spatial.Equinox>100</avm:Spatial.Equinox>
       <avm:Spatial.ReferenceValue>
