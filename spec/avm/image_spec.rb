@@ -22,6 +22,7 @@ describe AVM::Image do
   let(:light_years) { 'Light years' }
 
   let(:subject_names) { [ 'Name one', 'Name two' ] }
+  let(:categories) { [ 'Category one', 'Category two' ] }
 
   let(:coordinate_frame) { 'ICRS' }
   let(:equinox) { '100' }
@@ -78,6 +79,8 @@ describe AVM::Image do
       :related_resources => related_resources,
       :metadata_date => metadata_date,
       :metadata_version => metadata_version,
+      :subject_names => subject_names,
+      :categories => categories
     } }
   end
 
@@ -122,6 +125,9 @@ describe AVM::Image do
     its(:metadata_date) { should == Time.parse(metadata_date) }
     its(:metadata_version) { should == metadata_version }
 
+    its(:subject_names) { should == subject_names }
+    its(:categories) { should == categories }
+
     it { should be_valid }
   end
 
@@ -165,6 +171,8 @@ describe AVM::Image do
       :related_resources => related_resources,
       :metadata_date => Time.parse(metadata_date),
       :metadata_version => metadata_version,
+      :subject_names => subject_names,
+      :categories => categories
     } }
 
     its(:distance) { should == [ light_years, redshift ] }
@@ -190,7 +198,7 @@ describe AVM::Image do
         :light_years, :coordinate_frame, :equinox, :reference_value,
         :reference_dimension, :reference_pixel, :spatial_scale,
         :spatial_rotation, :coordinate_system_projection, :spatial_quality, :spatial_notes,
-        :fits_header, :spatial_cd_matrix
+        :fits_header, :spatial_cd_matrix, :subject_names, :categories
       ].each do |field|
         its(field) { should be_nil }
       end

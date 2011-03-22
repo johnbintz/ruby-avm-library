@@ -12,6 +12,12 @@
           <rdf:li xml:lang="x-default">Description</rdf:li>
         </rdf:Alt>
       </dc:description>
+      <dc:subject>
+        <rdf:Bag>
+          <rdf:li>Name one</rdf:li>
+          <rdf:li>Name two</rdf:li>
+        </rdf:Bag>
+      </dc:subject>
 
     </rdf:Description>
     <rdf:Description rdf:about=""
@@ -39,6 +45,12 @@
           <rdf:li>Redshift</rdf:li>
         </rdf:Seq>
       </avm:Distance>
+      <avm:Subject.Category>
+        <rdf:Bag>
+          <rdf:li>Category one</rdf:li>
+          <rdf:li>Category two</rdf:li>
+        </rdf:Bag>
+      </avm:Subject.Category>
       <avm:Spatial.CoordinateFrame>ICRS</avm:Spatial.CoordinateFrame>
       <avm:Spatial.Equinox>100</avm:Spatial.Equinox>
       <avm:Spatial.ReferenceValue>

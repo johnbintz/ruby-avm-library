@@ -59,6 +59,7 @@ module AVM
       'RelatedResources',
       'MetadataDate',
       'MetadataVersion',
+      'Subject.Category',
     ]
 
     AVM_SINGLE_METHODS = [ 
@@ -88,6 +89,7 @@ module AVM
       :related_resources,
       :metadata_date,
       :metadata_version,
+      :categories
     ]
 
     AVM_SINGLE_MESSAGES = [
@@ -117,6 +119,7 @@ module AVM
       :related_resources,
       :string_metadata_date,
       :metadata_version,
+      :categories
     ]
 
     AVM_SINGLES = AVM_SINGLE_FIELDS.zip(AVM_SINGLE_METHODS)
@@ -138,7 +141,7 @@ module AVM
       :spatial_scale, :spatial_rotation, :coordinate_system_projection, :spatial_quality,
       :spatial_notes, :fits_header, :spatial_cd_matrix, :distance,
       :publisher, :publisher_id, :resource_id, :resource_url,
-      :related_resources, :metadata_date, :metadata_version
+      :related_resources, :metadata_date, :metadata_version, :subject_names, :categories
     ]
 
     attr_reader :creator, :observations
@@ -269,6 +272,10 @@ module AVM
           if node = refs[:dublin_core].at_xpath(".//dc:#{field}//rdf:li[1]")
             options[field] = node.text
           end
+        end
+
+        if node = refs[:dublin_core].at_xpath(".//dc:subject/rdf:Bag")
+          options[:subject_names] = node.search('./rdf:li').collect(&:text)
         end
 
         AVM_SINGLES.each do |tag, field|
