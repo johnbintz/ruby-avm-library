@@ -172,7 +172,8 @@ describe AVM::Image do
       :metadata_date => Time.parse(metadata_date),
       :metadata_version => metadata_version,
       :subject_names => subject_names,
-      :categories => categories
+      :categories => categories,
+      :observations => []
     } }
 
     its(:distance) { should == [ light_years, redshift ] }

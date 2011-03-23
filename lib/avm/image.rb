@@ -322,6 +322,7 @@ module AVM
     def to_h
       hash = Hash[HASH_FIELDS.collect { |key| [ key, send(key) ] }]
       hash[:creator] = creator.to_a
+      hash[:observations] = observations.collect(&:to_h)
       hash
     end
 
