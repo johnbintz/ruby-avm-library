@@ -51,6 +51,6 @@ To use the current development version:
 
 ## More resources
 
-* RDoc: http://ruby-docs.info/blah
-* AVM Standard: http://www.virtualastronomy.org/
+* RDoc: [http://rdoc.info/github/johnbintz/ruby-avm-library/frames](http://rdoc.info/github/johnbintz/ruby-avm-library/frames)
+* AVM Standard: [http://www.virtualastronomy.org/avm_metadata.php](http://www.virtualastronomy.org/avm_metadata.php)
 
