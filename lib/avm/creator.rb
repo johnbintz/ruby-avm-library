@@ -2,6 +2,7 @@ require 'avm/contact'
 require 'nokogiri'
 
 module AVM
+  # A container for Contacts (contributors to an image)
   class Creator
     attr_reader :contacts, :image
 
@@ -34,8 +35,8 @@ module AVM
     end
 
     def method_missing(key, *opts)
-      if key.to_s[-1..-1] == '='
-        @options[key.to_s[0..-2].to_sym] = opts.first
+      if (key_to_s = key.to_s)[-1..-1] == '='
+        @options[key_to_s[0..-2].to_sym] = opts.first
       else
         if PRIMARY_CONTACT_FIELDS.include?(key)
           primary_contact_field key

@@ -3,6 +3,7 @@ require 'avm/image'
 require 'pp'
 
 module AVM
+  # The CLI interface
   class CLI < ::Thor
     default_task :convert
 

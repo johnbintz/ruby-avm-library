@@ -8,6 +8,7 @@ require 'avm/coordinate_frame'
 require 'avm/observation'
 
 module AVM
+  # A single image, which has Observations, Contacts, and other metadata
   class Image
     DUBLIN_CORE_FIELDS = [ :title, :description ]
 
@@ -151,15 +152,14 @@ module AVM
       @options = options
 
       AVM_TO_FLOAT.each do |field| 
-        if @options[field]
-          case @options[field]
-          when Array
-            @options[field].collect!(&:to_f)
-          else
-            @options[field] = @options[field].to_f
-          end
-        end
+        @options[field] = case (value = @options[field])
+                          when Array
+                            value.collect(&:to_f)
+                          else
+                            value ? value.to_f : nil
+                          end
       end
+
 
       @observations = []
     end
@@ -336,10 +336,8 @@ module AVM
       end
 
       def string_date_or_nil(field)
-        return nil if !send(field)
-        send(field).strftime('%Y-%m-%d')
+        (value = send(field)) ? value.strftime('%Y-%m-%d') : nil
       end
-
 
       def alt_li_tag(text)
         %{<rdf:Alt><rdf:li xml:lang="x-default">#{text}</rdf:li></rdf:Alt>}

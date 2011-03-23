@@ -1,4 +1,6 @@
 module AVM
+  # An individual observation by a single instrument w/ specific settings.
+  # Astronomical images are made of one or more Observations.
   class Observation
     AVM_SINGLE_FIELDS = %w{Facility Instrument Spectral.ColorAssignment Spectral.Band Spectral.Bandpass Spectral.CentralWavelength Temporal.StartTime Temporal.IntegrationTime DatasetID}
     AVM_SINGLE_METHODS = [ :facility, :instrument, :color_assignment, :band, :bandpass, :wavelength, :string_start_time, :integration_time, :dataset_id ]
@@ -7,9 +9,8 @@ module AVM
     attr_reader :image, :options
 
     def initialize(image, options = {})
-      options[:start_time] = options[:string_start_time] if options[:string_start_time]
-
       @image, @options = image, options
+      @options[:start_time] = @options[:string_start_time] || @options[:start_time]
     end
   
     def method_missing(method)
@@ -17,7 +18,7 @@ module AVM
     end
 
     def wavelength
-      @options[:wavelength] ? @options[:wavelength].to_f : nil
+      (wavelength = @options[:wavelength]) ? wavelength.to_f : nil
     end
 
     def start_time
@@ -25,11 +26,7 @@ module AVM
     end
 
     def string_start_time
-      if start_time
-        start_time.strftime('%Y-%m-%dT%H:%M')
-      else
-        nil
-      end
+      start_time ? start_time.strftime('%Y-%m-%dT%H:%M') : nil
     end
 
     def to_h

@@ -1,4 +1,5 @@
 module AVM
+  # A contributor to an image
   class Contact
     FIELD_MAP = {
       :zip => :postal_code,

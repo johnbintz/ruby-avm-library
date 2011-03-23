@@ -1,6 +1,7 @@
 require 'delegate'
 
 module AVM
+  # Delegate of Nokogiri::XML::Node which fixes XPath queries to use the correct namespace prefixes
   class Node < DelegateClass(Nokogiri::XML::Node)
     def initialize(xmp, node)
       @xmp, @node = xmp, node

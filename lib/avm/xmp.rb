@@ -2,6 +2,7 @@ require 'nokogiri'
 require 'avm/node'
 
 module AVM
+  # An XMP document wrapper, providing namespace handling and document reference assistance.
   class XMP
     PREFIXES = {
       'dc' => 'Dublin Core',
@@ -58,20 +59,26 @@ module AVM
     end
 
     private
-      def prefix_map
-        @prefix_map ||= Hash[doc.document.collect_namespaces.collect { |prefix, namespace|
-          prefix = prefix.gsub('xmlns:', '')
-          result = nil
+      def current_namespaces
+        doc.document.collect_namespaces
+      end
 
-          REQUIRED_NAMESPACES.each do |original_prefix, target_namespace|
-            result = [ original_prefix.to_s, prefix ] if namespace == target_namespace
-          end
-          result
+      def prefix_map
+        @prefix_map ||= Hash[current_namespaces.collect { |prefix, namespace| 
+          self.class.get_required_namespace(namespace, prefix.gsub('xmlns:', '')) 
         }.compact]
+      end
+      
+      def self.get_required_namespace(namespace, prefix)
+        result = nil
+        REQUIRED_NAMESPACES.each do |original_prefix, target_namespace|
+          result = [ original_prefix.to_s, prefix ] if namespace == target_namespace
+        end
+        result
       end
 
       def ensure_namespaces!
-        existing = doc.document.collect_namespaces
+        existing = current_namespaces
 
         REQUIRED_NAMESPACES.each do |namespace, url|
           doc.root.add_namespace_definition(namespace.to_s, url) if !existing.values.include?(url)
@@ -83,8 +90,8 @@ module AVM
 
         search('//rdf:Description').each do |description|
           if first_child = description.first_element_child
-            if first_child.namespace
-              prefix = first_child.namespace.prefix
+            if namespace = first_child.namespace
+              prefix = namespace.prefix
 
               if prefix_description = PREFIXES[prefix_map.index(prefix)]
                 description[self % 'rdf:about'] = prefix_description
@@ -94,13 +101,17 @@ module AVM
           end
         end
 
-        if !at_xpath('//rdf:RDF')
-          doc.first_element_child.add_child(self % '<rdf:RDF />')
-        end
+        ensure_rdf!
+        ensure_missing_descriptions!(added)
+      end
 
+      def ensure_rdf!
+        doc.first_element_child.add_child(self % '<rdf:RDF />') if !at_xpath('//rdf:RDF')
+      end
 
+      def ensure_missing_descriptions!(already_added)
         PREFIXES.each do |prefix, about|
-          if !added.include?(prefix)
+          if !already_added.include?(prefix)
             at_xpath('//rdf:RDF').add_child(self % %{<rdf:Description rdf:about="#{about}" />})
           end
         end

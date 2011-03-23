@@ -1,4 +1,5 @@
 module AVM
+  # Build a ControlledVocabulary set of classes for use with CV fields
   module ControlledVocabulary
     class << self
       def included(klass)

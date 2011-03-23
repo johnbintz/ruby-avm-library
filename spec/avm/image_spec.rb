@@ -290,15 +290,15 @@ describe AVM::Image do
       it "should have the spatial tags" do
         xpath_text(avm, './avm:Spatial.CoordinateFrame').should == coordinate_frame
         xpath_text(avm, './avm:Spatial.Equinox').should == equinox
-        xpath_list(avm, './avm:Spatial.ReferenceValue').should == reference_value.collect(&:to_s)
-        xpath_list(avm, './avm:Spatial.ReferenceDimension').should == reference_dimension.collect(&:to_s)
-        xpath_list(avm, './avm:Spatial.ReferencePixel').should == reference_pixel.collect(&:to_s)
-        xpath_list(avm, './avm:Spatial.Scale').should == spatial_scale.collect(&:to_s)
+        xpath_list(avm, './avm:Spatial.ReferenceValue').should == reference_value.collect { |v| v.to_f.to_s }
+        xpath_list(avm, './avm:Spatial.ReferenceDimension').should == reference_dimension.collect { |v| v.to_f.to_s }
+        xpath_list(avm, './avm:Spatial.ReferencePixel').should == reference_pixel.collect { |v| v.to_f.to_s }
+        xpath_list(avm, './avm:Spatial.Scale').should == spatial_scale.collect { |v| v.to_f.to_s }
         xpath_text(avm, './avm:Spatial.CoordsystemProjection').should == coordinate_system_projection
         xpath_text(avm, './avm:Spatial.Quality').should == spatial_quality
         xpath_text(avm, './avm:Spatial.Notes').should == spatial_notes
         xpath_text(avm, './avm:Spatial.FITSheader').should == fits_header
-        xpath_list(avm, './avm:Spatial.CDMatrix').should == spatial_cd_matrix.collect(&:to_s)
+        xpath_list(avm, './avm:Spatial.CDMatrix').should == spatial_cd_matrix.collect { |v| v.to_f.to_s }
       end
 
       it "should have the publisher tags" do
