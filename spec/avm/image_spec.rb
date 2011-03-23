@@ -186,7 +186,7 @@ describe AVM::Image do
   end
 
   describe '.from_xml' do
-    let(:image) { AVM::Image.from_xml(File.read(file_path)) }
+    let!(:image) { AVM::Image.from_xml(File.read(file_path)) }
 
     subject { image }
 
@@ -316,26 +316,32 @@ describe AVM::Image do
           let(:redshift) { nil }
           let(:light_years) { nil }
 
-          specify { avm.at_xpath('./avm:Distance').should be_nil }
+          it("should have no distances") { avm.at_xpath('./avm:Distance').should be_nil }
         end
 
         context "redshift only" do
           let(:light_years) { nil }
 
-          specify { avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[1]').text.should == '-' }
-          specify { avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[2]').text.should == redshift }
+          it "should have redshift only" do
+            avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[1]').text.should == '-'
+            avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[2]').text.should == redshift
+          end
         end
         
         context "light years only" do
           let(:redshift) { nil }
 
-          specify { avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[1]').text.should == light_years }
-          specify { avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[2]').should be_nil }
+          it "should should have light years but not redshift" do
+            avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[1]').text.should == light_years
+            avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[2]').should be_nil
+          end
         end
         
         context "redshift and light years" do
-          specify { avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[1]').text.should == light_years }
-          specify { avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[2]').text.should == redshift }
+          it "should have both light years and redshift" do
+            avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[1]').text.should == light_years
+            avm.at_xpath('./avm:Distance/rdf:Seq/rdf:li[2]').text.should == redshift
+          end
         end
       end
     end
