@@ -6,6 +6,14 @@ describe AVM::XMP do
 
   subject { xmp }
 
+  describe '#initialize' do
+    context 'not a nokogiri document' do
+      let(:xmp) { self.class.describes.new("definitely not nokogiri node") }
+
+      it { expect { xmp }.to raise_error(StandardError, /not a Nokogiri node/) }
+    end
+  end
+
   describe '#get_refs' do
     before {
       xmp.get_refs do |refs|

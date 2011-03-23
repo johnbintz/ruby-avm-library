@@ -24,6 +24,9 @@ module AVM
 
     def initialize(doc = nil)
       @doc = doc || empty_xml_doc
+
+      raise StandardError.new('not a Nokogiri node') if !@doc.kind_of?(::Nokogiri::XML::Node)
+
       ensure_namespaces!
       ensure_descriptions_findable!
     end
