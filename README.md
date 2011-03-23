@@ -15,7 +15,7 @@ In your Gemfile:
 
 To use the current development version:
 
-    gem 'ruby-avm-library', :git => ''
+    gem 'ruby-avm-library', :git => 'git://github.com/johnbintz/ruby-avm-library.git'
 
 ### From RubyGems
 
