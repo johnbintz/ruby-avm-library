@@ -44,6 +44,7 @@ describe AVM::Image do
   let(:related_resources) { [ 'Resource 1', 'Resource 2' ] }
   let(:metadata_date) { '2010-01-05' }
   let(:metadata_version) { '1.2' }
+  let(:proposal_id) { [ 'one', 'two', 'three' ] }
 
   def self.with_all_options
     let(:options) { { 
@@ -80,7 +81,8 @@ describe AVM::Image do
       :metadata_date => metadata_date,
       :metadata_version => metadata_version,
       :subject_names => subject_names,
-      :categories => categories
+      :categories => categories,
+      :proposal_id => proposal_id
     } }
   end
 
@@ -124,6 +126,7 @@ describe AVM::Image do
     its(:related_resources) { should == related_resources }
     its(:metadata_date) { should == Time.parse(metadata_date) }
     its(:metadata_version) { should == metadata_version }
+    its(:proposal_id) { should == proposal_id }
 
     its(:subject_names) { should == subject_names }
     its(:categories) { should == categories }
@@ -152,16 +155,16 @@ describe AVM::Image do
       :image_quality => avm_image_quality.new,
       :coordinate_frame => avm_coordinate_frame.new,
       :equinox => equinox,
-      :reference_value => reference_value,
-      :reference_dimension => reference_dimension,
-      :reference_pixel => reference_pixel,
-      :spatial_scale => spatial_scale,
+      :reference_value => reference_value.collect(&:to_f),
+      :reference_dimension => reference_dimension.collect(&:to_f),
+      :reference_pixel => reference_pixel.collect(&:to_f),
+      :spatial_scale => spatial_scale.collect(&:to_f),
       :spatial_rotation => spatial_rotation,
       :coordinate_system_projection => avm_coordinate_system_projection.new,
       :spatial_quality => avm_spatial_quality.new,
       :spatial_notes => spatial_notes,
       :fits_header => fits_header,
-      :spatial_cd_matrix => spatial_cd_matrix,
+      :spatial_cd_matrix => spatial_cd_matrix.collect(&:to_f),
       :distance => [ light_years, redshift ],
       :creator => [],
       :publisher => publisher,
@@ -173,7 +176,8 @@ describe AVM::Image do
       :metadata_version => metadata_version,
       :subject_names => subject_names,
       :categories => categories,
-      :observations => []
+      :observations => [],
+      :proposal_id => proposal_id
     } }
 
     its(:distance) { should == [ light_years, redshift ] }
@@ -199,7 +203,7 @@ describe AVM::Image do
         :light_years, :coordinate_frame, :equinox, :reference_value,
         :reference_dimension, :reference_pixel, :spatial_scale,
         :spatial_rotation, :coordinate_system_projection, :spatial_quality, :spatial_notes,
-        :fits_header, :spatial_cd_matrix, :subject_names, :categories
+        :fits_header, :spatial_cd_matrix, :subject_names, :categories, :proposal_id
       ].each do |field|
         its(field) { should be_nil }
       end
@@ -285,6 +289,8 @@ describe AVM::Image do
         xpath_text(avm, './avm:ID').should == id
         xpath_text(avm, './avm:Type').should == type
         xpath_text(avm, './avm:Image.ProductQuality').should == image_quality
+        xpath_text(avm, './avm:Subject.Category').should == categories.join(';')
+        xpath_text(avm, './avm:ProposalID').should == proposal_id.join(';')
       end
 
       it "should have the spatial tags" do

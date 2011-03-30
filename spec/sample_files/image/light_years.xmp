@@ -91,6 +91,7 @@
       </avm:RelatedResources>
       <avm:MetadataDate>2010-01-05</avm:MetadataDate>
       <avm:MetadataVersion>1.2</avm:MetadataVersion>
+      <avm:ProposalID>one;two;three</avm:ProposalID>
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>

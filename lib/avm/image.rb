@@ -61,6 +61,7 @@ module AVM
       'MetadataDate',
       'MetadataVersion',
       'Subject.Category',
+      'ProposalID'
     ]
 
     AVM_SINGLE_METHODS = [ 
@@ -90,7 +91,8 @@ module AVM
       :related_resources,
       :metadata_date,
       :metadata_version,
-      :categories
+      :categories,
+      :proposal_id
     ]
 
     AVM_SINGLE_MESSAGES = [
@@ -120,7 +122,8 @@ module AVM
       :related_resources,
       :string_metadata_date,
       :metadata_version,
-      :categories
+      :categories,
+      :proposal_id
     ]
 
     AVM_SINGLES = AVM_SINGLE_FIELDS.zip(AVM_SINGLE_METHODS)
@@ -135,6 +138,9 @@ module AVM
       :reference_value
     ]
 
+    SEMICOLON_AVM_FIELDS = [ :categories, :proposal_id ]
+    :wa
+
     HASH_FIELDS = [ :title, :headline, :description, :distance_notes,
       :spectral_notes, :reference_url, :credit, :date,
       :id, :image_type, :image_quality, :coordinate_frame,
@@ -142,7 +148,8 @@ module AVM
       :spatial_scale, :spatial_rotation, :coordinate_system_projection, :spatial_quality,
       :spatial_notes, :fits_header, :spatial_cd_matrix, :distance,
       :publisher, :publisher_id, :resource_id, :resource_url,
-      :related_resources, :metadata_date, :metadata_version, :subject_names, :categories
+      :related_resources, :metadata_date, :metadata_version, :subject_names, :categories,
+      :proposal_id
     ]
 
     attr_reader :creator, :observations
@@ -191,12 +198,16 @@ module AVM
 
         AVM_SINGLES_FOR_MESSAGES.each do |tag, message|
           if value = send(message)
-            case value
-            when Array
-              container_tag = (message == :related_resources) ? 'Bag' : 'Seq'
-              value = "<rdf:#{container_tag}>" + value.collect { |v| "<rdf:li>#{v.to_s}</rdf:li>" }.join + "</rdf:#{container_tag}>"
+            if SEMICOLON_AVM_FIELDS.include?(message)
+              value = value.join(';')
             else
-              value = value.to_s
+              case value
+              when Array
+                container_tag = (message == :related_resources) ? 'Bag' : 'Seq'
+                value = "<rdf:#{container_tag}>" + value.collect { |v| "<rdf:li>#{v.to_s}</rdf:li>" }.join + "</rdf:#{container_tag}>"
+              else
+                value = value.to_s
+              end
             end
 
             refs[:avm].add_child(%{<avm:#{tag}>#{value}</avm:#{tag}>})
@@ -280,7 +291,7 @@ module AVM
 
         AVM_SINGLES.each do |tag, field|
           if node = refs[:avm].at_xpath("./avm:#{tag}")
-            if field == :categories
+            if SEMICOLON_AVM_FIELDS.include?(field)
               options[field] = node.text.split(";").collect(&:strip)
             else
               if !(list_items = node.search('.//rdf:li')).empty?
